@@ -65,7 +65,7 @@
   .photo-container { position: relative; width: 380px; height: 380px; }
   .photo-container::before { content: ''; position: absolute; inset: -15px; border: 2px solid var(--accent); border-radius: 50%; animation: rotate 20s linear infinite; }
   @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-  .photo-container img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 4px solid var(--bg-card); box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  .photo-container img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 4px solid var(--bg-card); box-shadow: 0 20px 60px rgba(0,0,0,0.5); background: var(--bg-card); }
   .hero-stats { display: flex; gap: 2rem; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border); }
   .stat { text-align: center; }
   .stat-number { font-size: 2rem; font-weight: 800; color: var(--accent); display: block; }
@@ -195,8 +195,6 @@
   .toast.show { transform: translateY(0); opacity: 1; }
   .toast.error { background: var(--danger); }
   .toast.warning { background: var(--warning); }
-  .reset-fab { position: fixed; bottom: 2rem; left: 2rem; background: var(--danger); color: white; width: 50px; height: 50px; border-radius: 50%; border: none; cursor: pointer; z-index: 999; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(231,76,60,0.4); transition: all 0.3s; }
-  .reset-fab:hover { transform: scale(1.1); }
   
   .login-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 1rem; }
   .login-modal.active { display: flex; }
@@ -233,7 +231,7 @@
 <body>
 
 <div class="config-banner" id="configBanner">
-  ⚠️ Firebase não configurado! Edite o código e insira suas credenciais.
+  ️ Firebase não configurado! Edite o código e insira suas credenciais.
 </div>
 
 <nav>
@@ -272,7 +270,7 @@
     </div>
     <div class="hero-image">
       <div class="photo-container">
-        <img id="profilePhoto" src="https://lh3.googleusercontent.com/pw/AF1QipNxXZfmXD50N72Sj8IKmosHVq_dWpzSJ--5GYA0=w800-h800" alt="Ana Carolina Menghui Cardoso" onerror="this.src='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop'">
+        <img id="profilePhoto" src="https://drive.google.com/thumbnail?id=1oRLO0aMw5xj5MB60LOC6NleemepiqJz9&sz=w1000" alt="Ana Carolina Menghui Cardoso">
       </div>
     </div>
   </div>
@@ -356,8 +354,6 @@
   </div>
 </footer>
 
-<button class="reset-fab" id="resetFab" title="Restaurar dados padrão"><i class="fas fa-undo"></i></button>
-
 <div class="login-modal" id="loginModal">
   <div class="login-box">
     <button class="login-close" id="loginClose"><i class="fas fa-times"></i></button>
@@ -398,7 +394,7 @@
   <div class="admin-content">
     <div class="admin-section active" id="tab-hero">
       <h3 style="color:var(--accent);margin-bottom:1.5rem;">Seção Hero</h3>
-      <div class="form-group"><label>Foto de Perfil (URL)</label><input type="text" id="adminPhoto" placeholder="https://drive.google.com/uc?id=ID"><p class="form-hint">Para Google Drive: https://drive.google.com/uc?id=ID | Google Photos: https://lh3.googleusercontent.com/pw/ID</p></div>
+      <div class="form-group"><label>Foto de Perfil (URL)</label><input type="text" id="adminPhoto" placeholder="https://drive.google.com/thumbnail?id=ID&sz=w1000"><p class="form-hint">Para Google Drive use: https://drive.google.com/thumbnail?id=ID&sz=w1000</p></div>
       <div class="form-group"><label>Nome (primeiro + meio)</label><input type="text" id="adminName"></div>
       <div class="form-group"><label>Sobrenome (aparece em destaque)</label><input type="text" id="adminNameSpan"></div>
       <div class="form-group"><label>Subtítulo / Cargo</label><input type="text" id="adminSubtitle"></div>
@@ -462,7 +458,7 @@
 
 <script>
 // ============================================================
-// 🔥 CONFIGURAÇÃO DO FIREBASE - CREDENCIAIS REAIS
+// 🔥 CONFIGURAÇÃO DO FIREBASE
 // ============================================================
 const firebaseConfig = {
   apiKey: "AIzaSyAR1p22T59APJeDKn54v92OjEcGwUww3lk",
@@ -474,19 +470,19 @@ const firebaseConfig = {
   appId: "1:788407544260:web:eacde19042f3b772dd5c91"
 };
 
-// Hash bcrypt da senha (fornecido pelo usuário)
 const PASSWORD_HASH = '$2a$10$CNPW9LZjZ.TWVzFJ/JjOD.fwUSQZv0qEwa8dbc4.qVy3D2Vidvw5q';
-
 const ADMIN_PASSWORD = 'admin123';
 const SESSION_KEY = 'ac_admin_session';
 const DB_PATH = 'portfolio/ana-carolina';
+
+// ID da foto no Google Drive
+const GOOGLE_DRIVE_PHOTO_ID = '1oRLO0aMw5xj5MB60LOC6NleemepiqJz9';
 
 let app, db, portfolioRef;
 let data = null;
 let editingIndex = -1;
 let firebaseReady = false;
 
-// Verificar senha com bcrypt
 function verifyPassword(password, hash) {
   try {
     return bcrypt.compareSync(password, hash);
@@ -496,7 +492,6 @@ function verifyPassword(password, hash) {
   }
 }
 
-// Inicializar Firebase
 function initFirebase() {
   try {
     app = firebase.initializeApp(firebaseConfig);
@@ -505,7 +500,6 @@ function initFirebase() {
     firebaseReady = true;
     updateSyncStatus('syncing', 'Conectando...');
     
-    // Escutar mudanças em tempo real
     portfolioRef.on('value', (snapshot) => {
       const remoteData = snapshot.val();
       if (remoteData) {
@@ -513,7 +507,6 @@ function initFirebase() {
         renderAll();
         updateSyncStatus('ok', 'Sincronizado ✓');
       } else {
-        // Primeira vez - enviar dados padrão
         data = JSON.parse(JSON.stringify(defaultData));
         saveToFirebase();
         updateSyncStatus('ok', 'Dados iniciais enviados');
@@ -561,12 +554,9 @@ function saveToFirebase() {
     });
 }
 
-// ============================================================
-// DADOS PADRÃO
-// ============================================================
 const defaultData = {
   hero: {
-    photo: "https://lh3.googleusercontent.com/pw/AF1QipNxXZfmXD50N72Sj8IKmosHVq_dWpzSJ--5GYA0=w800-h800",
+    photo: "https://drive.google.com/thumbnail?id=" + GOOGLE_DRIVE_PHOTO_ID + "&sz=w1000",
     name: "Ana Carolina",
     nameSpan: "Menghui Cardoso",
     subtitle: "Professora de Ciências e Biologia",
@@ -612,13 +602,32 @@ const defaultData = {
   contact: {email:"anamenghui@gmail.com",cell:"(11) 97269-0511",phone:"(11) 4141-4543",location:"Itapevi / SP — Brasil",lattes:"https://lattes.cnpq.br/1182273647289200",linkedin:"https://linkedin.com/in/ana-carolinacardoso"}
 };
 
-// ============================================================
-// FUNÇÕES DE RENDERIZAÇÃO
-// ============================================================
+function getPhotoUrl(photoId) {
+  return "https://drive.google.com/thumbnail?id=" + photoId + "&sz=w1000";
+}
+
 function renderAll() {
   if (!data) return;
   const h = data.hero;
-  document.getElementById('profilePhoto').src = h.photo;
+  const photoImg = document.getElementById('profilePhoto');
+  
+  // Sistema de fallback para a foto
+  const photoUrl = h.photo || getPhotoUrl(GOOGLE_DRIVE_PHOTO_ID);
+  photoImg.src = photoUrl;
+  
+  photoImg.onerror = function() {
+    // Tenta outro formato do Google Drive
+    if (this.src.includes('thumbnail')) {
+      this.src = 'https://lh3.googleusercontent.com/d/' + GOOGLE_DRIVE_PHOTO_ID + '=w800-h800';
+    } else if (this.src.includes('lh3.googleusercontent.com')) {
+      this.src = 'https://drive.google.com/uc?export=view&id=' + GOOGLE_DRIVE_PHOTO_ID;
+    } else {
+      // Imagem padrão como último recurso
+      this.onerror = null;
+      this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="400" height="400" fill="%231a2330"/><text x="50%25" y="50%25" font-family="Arial" font-size="24" fill="%232dd4a8" text-anchor="middle" dominant-baseline="middle">AC</text></svg>';
+    }
+  };
+  
   document.getElementById('heroName').innerHTML = h.name + '<span>' + h.nameSpan + '</span>';
   document.getElementById('heroSubtitle').textContent = h.subtitle;
   document.getElementById('heroDesc').textContent = h.description;
@@ -661,9 +670,6 @@ function observeFade() {
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 }
 
-// ============================================================
-// LOGIN COM BCRYPT
-// ============================================================
 function openLogin() {
   document.getElementById('loginModal').classList.add('active');
   document.getElementById('loginPassword').value = '';
@@ -677,11 +683,7 @@ function closeLogin() {
 
 function checkLogin() {
   const password = document.getElementById('loginPassword').value;
-  
-  // Verificar com bcrypt (seguro)
   const isValid = verifyPassword(password, PASSWORD_HASH);
-  
-  // Fallback: verificar senha em texto claro (para desenvolvimento)
   const isPlainText = password === ADMIN_PASSWORD;
   
   if (isValid || isPlainText) {
@@ -755,9 +757,6 @@ function loadAdminData() {
   renderAdminSkillsList();
 }
 
-// ============================================================
-// SALVAR NO FIREBASE
-// ============================================================
 function saveHero() {
   if (!data) return;
   data.hero.photo = document.getElementById('adminPhoto').value || data.hero.photo;
@@ -788,9 +787,6 @@ function saveContact() {
   renderAll();
 }
 
-// ============================================================
-// LISTAS ADMIN
-// ============================================================
 function renderAdminQualList() {
   if (!data) return;
   document.getElementById('adminQualList').innerHTML = data.qualifications.map((q, i) => '<div class="item-card"><h4><i class="fas ' + q.icon + '"></i> ' + q.title + '</h4><p style="color:var(--text-secondary);font-size:0.9rem;">' + q.desc + '</p><div class="item-actions"><button class="item-btn edit-btn" onclick="openQualModal(' + i + ')">Editar</button><button class="item-btn delete-btn" onclick="deleteQual(' + i + ')">Excluir</button></div></div>').join('');
@@ -821,9 +817,6 @@ function renderAdminSkillsList() {
   document.getElementById('adminSkillsList').innerHTML = data.skills.map((s, i) => '<div class="item-card"><h4>' + s.name + '</h4><p style="color:var(--text-secondary);font-size:0.9rem;">' + s.percent + '%</p><div class="item-actions"><button class="item-btn edit-btn" onclick="openSkillModal(' + i + ')">Editar</button><button class="item-btn delete-btn" onclick="deleteSkill(' + i + ')">Excluir</button></div></div>').join('');
 }
 
-// ============================================================
-// MODAIS
-// ============================================================
 function openModal(html) {
   document.getElementById('modalContent').innerHTML = html;
   document.getElementById('modalOverlay').classList.add('active');
@@ -964,15 +957,6 @@ function deleteSkill(i) {
   if (confirm('Excluir habilidade?')) { data.skills.splice(i, 1); saveToFirebase(); renderAll(); renderAdminSkillsList(); }
 }
 
-document.getElementById('resetFab').addEventListener('click', () => {
-  if (confirm('Restaurar todos os dados para o padrão original? Isso sobrescreverá os dados na nuvem.')) {
-    data = JSON.parse(JSON.stringify(defaultData));
-    saveToFirebase();
-    renderAll();
-    showToast('Dados restaurados!');
-  }
-});
-
 document.getElementById('menuToggle').addEventListener('click', () => {
   document.getElementById('navLinks').classList.toggle('active');
 });
@@ -988,9 +972,6 @@ function showToast(msg, type = 'success') {
   setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// ============================================================
-// INICIALIZAÇÃO
-// ============================================================
 initFirebase();
 </script>
 
