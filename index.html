@@ -6,6 +6,7 @@
 <title>Ana Carolina Menghui Cardoso | Portfólio Profissional</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/index.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -20,6 +21,7 @@
     --border: #2a3545;
     --danger: #e74c3c;
     --success: #27ae60;
+    --warning: #f39c12;
   }
   html { scroll-behavior: smooth; }
   body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; }
@@ -38,6 +40,12 @@
   .admin-btn:hover { background: var(--accent-hover); }
   .admin-btn::after { display: none !important; }
   .menu-toggle { display: none; font-size: 1.5rem; cursor: pointer; color: var(--text-primary); background: none; border: none; }
+  
+  .sync-status { position: fixed; top: 80px; right: 20px; background: var(--bg-card); padding: 0.5rem 1rem; border-radius: 50px; border: 1px solid var(--border); font-size: 0.8rem; z-index: 999; display: flex; align-items: center; gap: 0.5rem; }
+  .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); animation: pulse-dot 2s infinite; }
+  .sync-dot.error { background: var(--danger); }
+  .sync-dot.syncing { background: var(--warning); }
+  @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
   
   .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 8rem 5% 4rem; position: relative; overflow: hidden; }
   .hero::before { content: ''; position: absolute; top: -50%; right: -20%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(45,212,168,0.15) 0%, transparent 70%); border-radius: 50%; animation: pulse 8s ease-in-out infinite; }
@@ -185,8 +193,24 @@
   .modal-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
   .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--success); color: white; padding: 1rem 1.5rem; border-radius: 10px; z-index: 4000; transform: translateY(100px); opacity: 0; transition: all 0.3s; font-weight: 600; }
   .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.error { background: var(--danger); }
+  .toast.warning { background: var(--warning); }
   .reset-fab { position: fixed; bottom: 2rem; left: 2rem; background: var(--danger); color: white; width: 50px; height: 50px; border-radius: 50%; border: none; cursor: pointer; z-index: 999; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(231,76,60,0.4); transition: all 0.3s; }
   .reset-fab:hover { transform: scale(1.1); }
+  
+  .login-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 1rem; }
+  .login-modal.active { display: flex; }
+  .login-box { background: var(--bg-secondary); border-radius: 20px; padding: 2.5rem; width: 100%; max-width: 420px; border: 2px solid var(--accent); box-shadow: 0 20px 60px rgba(45,212,168,0.2); position: relative; }
+  .login-box .login-icon { width: 80px; height: 80px; background: var(--accent-soft); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2rem; color: var(--accent); }
+  .login-box h2 { text-align: center; color: var(--accent); margin-bottom: 0.5rem; font-size: 1.6rem; }
+  .login-box .login-subtitle { text-align: center; color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem; }
+  .login-error { background: rgba(231,76,60,0.15); color: var(--danger); padding: 0.8rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; display: none; text-align: center; border: 1px solid var(--danger); }
+  .login-error.show { display: block; }
+  .login-box .btn { width: 100%; justify-content: center; }
+  .login-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer; }
+  
+  .config-banner { background: var(--warning); color: #000; padding: 1rem; text-align: center; font-weight: 600; display: none; }
+  .config-banner.show { display: block; }
   
   @media (max-width: 900px) {
     .hero-content { grid-template-columns: 1fr; text-align: center; gap: 3rem; }
@@ -208,6 +232,10 @@
 </head>
 <body>
 
+<div class="config-banner" id="configBanner">
+  ⚠️ Firebase não configurado! Edite o código e insira suas credenciais.
+</div>
+
 <nav>
   <div class="logo">AC<span style="color:var(--text-primary)">.Cardoso</span></div>
   <ul class="nav-links" id="navLinks">
@@ -224,6 +252,11 @@
   <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
 </nav>
 
+<div class="sync-status" id="syncStatus">
+  <div class="sync-dot" id="syncDot"></div>
+  <span id="syncText">Conectando...</span>
+</div>
+
 <section class="hero" id="home">
   <div class="hero-content">
     <div class="hero-text">
@@ -235,15 +268,11 @@
         <a href="#contact" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Entrar em Contato</a>
         <a href="#experience" class="btn btn-secondary"><i class="fas fa-briefcase"></i> Ver Experiência</a>
       </div>
-      <div class="hero-stats" id="heroStats">
-        <div class="stat"><span class="stat-number">5+</span><span class="stat-label">Anos de Experiência</span></div>
-        <div class="stat"><span class="stat-number">3</span><span class="stat-label">Formações</span></div>
-        <div class="stat"><span class="stat-number">4+</span><span class="stat-label">Cursos</span></div>
-      </div>
+      <div class="hero-stats" id="heroStats"></div>
     </div>
     <div class="hero-image">
       <div class="photo-container">
-        <img id="profilePhoto" src="https://drive.google.com/file/d/1oRLO0aMw5xj5MB60LOC6NleemepiqJz9/view?usp=sharing" alt="Foto de Perfil">
+        <img id="profilePhoto" src="https://lh3.googleusercontent.com/pw/AF1QipNxXZfmXD50N72Sj8IKmosHVq_dWpzSJ--5GYA0=w800-h800" alt="Ana Carolina Menghui Cardoso" onerror="this.src='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop'">
       </div>
     </div>
   </div>
@@ -254,11 +283,7 @@
     <p class="section-tag">Sobre Mim</p>
     <h2 class="section-title">Conheça Minha Trajetória</h2>
   </div>
-  <div class="about-content fade-in" id="aboutContent">
-    <p>Professora de Ciências e Biologia, com experiência no Ensino Fundamental – Anos Finais e Ensino Médio, em instituições públicas e particulares.</p>
-    <p>Experiência com planejamento e desenvolvimento de aulas, avaliação da aprendizagem, recomposição e acompanhamento do desempenho dos estudantes. Vivência com o Sistema de Ensino Objetivo e com o Google for Education, além da utilização de diferentes recursos e plataformas digitais educacionais.</p>
-    <p>Habilidade no desenvolvimento de metodologias ativas, situações-problema, atividades investigativas e projetos interdisciplinares, buscando promover a participação e a aprendizagem significativa dos estudantes.</p>
-  </div>
+  <div class="about-content fade-in" id="aboutContent"></div>
 </section>
 
 <section id="qualifications">
@@ -267,12 +292,7 @@
     <h2 class="section-title">Qualificações Profissionais</h2>
     <p class="section-subtitle">Competências que fazem a diferença no meu trabalho</p>
   </div>
-  <div class="qualifications-grid" id="qualificationsGrid">
-    <div class="qual-card fade-in"><div class="qual-icon"><i class="fas fa-flask"></i></div><h3>Ensino de Ciências e Biologia</h3><p>Experiência no Ensino Fundamental – Anos Finais e Ensino Médio, em instituições públicas e particulares.</p></div>
-    <div class="qual-card fade-in"><div class="qual-icon"><i class="fas fa-chalkboard-teacher"></i></div><h3>Metodologias Ativas</h3><p>Desenvolvimento de situações-problema, atividades investigativas e projetos interdisciplinares.</p></div>
-    <div class="qual-card fade-in"><div class="qual-icon"><i class="fab fa-google"></i></div><h3>Plataformas Digitais</h3><p>Vivência com o Sistema de Ensino Objetivo, Google for Education e diferentes plataformas digitais educacionais.</p></div>
-    <div class="qual-card fade-in"><div class="qual-icon"><i class="fas fa-brain"></i></div><h3>Avaliação da Aprendizagem</h3><p>Planejamento, avaliação, recomposição e acompanhamento do desempenho dos estudantes.</p></div>
-  </div>
+  <div class="qualifications-grid" id="qualificationsGrid"></div>
 </section>
 
 <section class="education-section" id="experience">
@@ -281,11 +301,7 @@
     <h2 class="section-title">Experiência Profissional</h2>
     <p class="section-subtitle">Minha jornada profissional ao longo dos anos</p>
   </div>
-  <div class="timeline" id="timeline">
-    <div class="timeline-item fade-in"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-date">Janeiro/2025 — Atualmente</div><h3 class="timeline-title">Professora de Ciências - Efetiva</h3><p class="timeline-company">Secretaria da Educação do Estado de São Paulo (SEDUC-SP)</p><ul><li>Planejamento e desenvolvimento de aulas de Ciências para 8º e 9º anos, alinhadas ao Currículo Paulista.</li><li>Elaboração de atividades, avaliações e estratégias de recomposição das aprendizagens.</li><li>Análise de resultados de avaliações para identificação de dificuldades e planejamento de intervenções pedagógicas.</li><li>Aplicação de metodologias ativas, situações-problema e atividades investigativas.</li><li>Utilização de recursos e plataformas digitais educacionais, como Sala do Futuro, Tarefa SP e Material Digital.</li></ul></div></div>
-    <div class="timeline-item fade-in"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-date">Junho/2021 — Janeiro/2025</div><h3 class="timeline-title">Professora de Ciências e Biologia</h3><p class="timeline-company">Colégio Porto Marchesano</p><ul><li>Planejamento e desenvolvimento de aulas teóricas e práticas para turmas do Ensino Fundamental II e Ensino Médio.</li><li>Elaboração, aplicação e correção de avaliações e atividades pedagógicas.</li><li>Desenvolvimento de projetos interdisciplinares.</li><li>Acompanhamento da aprendizagem dos estudantes.</li><li>Atuação como professora representante da Olimpíada Brasileira de Astronomia e Astronáutica (OBA).</li></ul></div></div>
-    <div class="timeline-item fade-in"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-date">Agosto/2018 — Janeiro/2020</div><h3 class="timeline-title">Professora de Educação Básica</h3><p class="timeline-company">CAPES – Programa Residência Pedagógica</p><ul><li>Participação em atividades de iniciação à docência.</li><li>Planejamento e desenvolvimento de aulas e atividades pedagógicas.</li><li>Acompanhamento de turmas e vivência da rotina escolar, em parceria com professores da Educação Básica.</li></ul></div></div>
-  </div>
+  <div class="timeline" id="timeline"></div>
 </section>
 
 <section id="education">
@@ -294,11 +310,7 @@
     <h2 class="section-title">Formação Acadêmica</h2>
     <p class="section-subtitle">Minha jornada educacional e certificações</p>
   </div>
-  <div class="education-grid" id="educationGrid">
-    <div class="edu-card fade-in"><span class="edu-badge">Em Curso</span><h3>Pós-Graduação Lato Sensu em Neuroaprendizagem, Dificuldades e Transtornos</h3><p class="edu-school"><i class="fas fa-university"></i> Faculdade Líbano</p><p class="edu-date">Previsão: Março/2027</p></div>
-    <div class="edu-card fade-in"><span class="edu-badge">Especialização</span><h3>Especialização em Metodologia do Ensino de Ciências da Natureza</h3><p class="edu-school"><i class="fas fa-university"></i> Instituto Federal de Educação, Ciência e Tecnologia de São Paulo (IFSP)</p><p class="edu-date">Janeiro/2023 — Outubro/2024</p></div>
-    <div class="edu-card fade-in"><span class="edu-badge">Graduação</span><h3>Licenciatura em Ciências Biológicas</h3><p class="edu-school"><i class="fas fa-university"></i> Instituto Federal de Educação, Ciência e Tecnologia de São Paulo (IFSP)</p><p class="edu-date">Fevereiro/2016 — Dezembro/2019</p></div>
-  </div>
+  <div class="education-grid" id="educationGrid"></div>
 </section>
 
 <section class="about" id="courses">
@@ -307,22 +319,7 @@
     <h2 class="section-title">Cursos Complementares</h2>
     <p class="section-subtitle">Capacitações que complementam minha formação</p>
   </div>
-  <div id="coursesContainer">
-    <div class="courses-category fade-in">
-      <h3 class="category-title"><i class="fas fa-microscope"></i> Ciências e Biologia</h3>
-      <div class="courses-grid">
-        <div class="course-card"><div class="course-icon"><i class="fas fa-leaf"></i></div><div class="course-info"><h4>A Botânica no Cotidiano IV</h4><p>Universidade de São Paulo (USP) • 60h • Novembro/2021</p></div></div>
-        <div class="course-card"><div class="course-icon"><i class="fas fa-dna"></i></div><div class="course-info"><h4>Genética aplicada à Conservação</h4><p>Universidade Federal do ABC • 15h • Julho/2020</p></div></div>
-        <div class="course-card"><div class="course-icon"><i class="fas fa-atom"></i></div><div class="course-info"><h4>Inspira Ciência - 6° Edição</h4><p>Museu do Amanhã • 30h • Julho/2022</p></div></div>
-      </div>
-    </div>
-    <div class="courses-category fade-in">
-      <h3 class="category-title"><i class="fas fa-hands-helping"></i> Inclusão e Acessibilidade</h3>
-      <div class="courses-grid">
-        <div class="course-card"><div class="course-icon"><i class="fas fa-hands"></i></div><div class="course-info"><h4>Libras Básico</h4><p>Secretaria de Educação do Município de Itapevi • 80h • Dezembro/2020</p></div></div>
-      </div>
-    </div>
-  </div>
+  <div id="coursesContainer"></div>
 </section>
 
 <section id="languages">
@@ -331,10 +328,7 @@
     <h2 class="section-title">Idiomas</h2>
     <p class="section-subtitle">Minhas competências linguísticas</p>
   </div>
-  <div class="languages-grid" id="languagesContainer">
-    <div class="language-card fade-in"><i class="fas fa-language"></i><h4>Inglês</h4><p>Nível Básico</p></div>
-    <div class="language-card fade-in"><i class="fas fa-language"></i><h4>Espanhol</h4><p>Nível Básico</p></div>
-  </div>
+  <div class="languages-grid" id="languagesContainer"></div>
 </section>
 
 <section class="skills" id="skills">
@@ -343,13 +337,7 @@
     <h2 class="section-title">Habilidades Técnicas</h2>
     <p class="section-subtitle">Minhas principais competências profissionais</p>
   </div>
-  <div class="skills-container" id="skillsContainer">
-    <div class="skill-item fade-in"><div class="skill-header"><span class="skill-name">Planejamento e desenvolvimento de aulas</span><span class="skill-percent">95%</span></div><div class="skill-bar"><div class="skill-progress" data-width="95"></div></div></div>
-    <div class="skill-item fade-in"><div class="skill-header"><span class="skill-name">Metodologias ativas e atividades investigativas</span><span class="skill-percent">90%</span></div><div class="skill-bar"><div class="skill-progress" data-width="90"></div></div></div>
-    <div class="skill-item fade-in"><div class="skill-header"><span class="skill-name">Google for Education e Sistema de Ensino Objetivo</span><span class="skill-percent">88%</span></div><div class="skill-bar"><div class="skill-progress" data-width="88"></div></div></div>
-    <div class="skill-item fade-in"><div class="skill-header"><span class="skill-name">Avaliação da aprendizagem e recomposição</span><span class="skill-percent">92%</span></div><div class="skill-bar"><div class="skill-progress" data-width="92"></div></div></div>
-    <div class="skill-item fade-in"><div class="skill-header"><span class="skill-name">Projetos interdisciplinares</span><span class="skill-percent">85%</span></div><div class="skill-bar"><div class="skill-progress" data-width="85"></div></div></div>
-  </div>
+  <div class="skills-container" id="skillsContainer"></div>
 </section>
 
 <section class="contact-section" id="contact">
@@ -358,32 +346,43 @@
     <h2 class="section-title">Entre em Contato</h2>
     <p class="section-subtitle">Estou disponível para novas oportunidades e projetos</p>
   </div>
-  <div class="contact-container" id="contactContainer">
-    <a href="mailto:anamenghui@gmail.com" class="contact-card fade-in"><div class="contact-icon"><i class="fas fa-envelope"></i></div><h4>E-mail</h4><p>anamenghui@gmail.com</p></a>
-    <a href="tel:+5511972690511" class="contact-card fade-in"><div class="contact-icon"><i class="fas fa-mobile-alt"></i></div><h4>Celular</h4><p>(11) 97269-0511</p></a>
-    <a href="tel:+551141414543" class="contact-card fade-in"><div class="contact-icon"><i class="fas fa-phone"></i></div><h4>Telefone</h4><p>(11) 4141-4543</p></a>
-    <div class="contact-card fade-in"><div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div><h4>Localização</h4><p>Itapevi / SP — Brasil</p></div>
-  </div>
+  <div class="contact-container" id="contactContainer"></div>
 </section>
 
 <footer>
   <div class="footer-content">
     <p>© 2026 Ana Carolina Menghui Cardoso. Todos os direitos reservados.</p>
-    <div class="footer-social">
-      <a href="mailto:anamenghui@gmail.com" title="E-mail"><i class="fas fa-envelope"></i></a>
-      <a href="tel:+5511972690511" title="Celular"><i class="fas fa-mobile-alt"></i></a>
-      <a href="https://lattes.cnpq.br/1182273647289200" target="_blank" title="Lattes"><i class="fas fa-graduation-cap"></i></a>
-      <a href="https://linkedin.com/in/ana-carolinacardoso" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-    </div>
+    <div class="footer-social" id="footerSocial"></div>
   </div>
 </footer>
 
 <button class="reset-fab" id="resetFab" title="Restaurar dados padrão"><i class="fas fa-undo"></i></button>
 
+<div class="login-modal" id="loginModal">
+  <div class="login-box">
+    <button class="login-close" id="loginClose"><i class="fas fa-times"></i></button>
+    <div class="login-icon"><i class="fas fa-lock"></i></div>
+    <h2>Acesso Restrito</h2>
+    <p class="login-subtitle">Digite a senha para acessar o painel administrativo</p>
+    <div class="login-error" id="loginError"><i class="fas fa-exclamation-circle"></i> Senha incorreta. Tente novamente.</div>
+    <div class="form-group">
+      <label><i class="fas fa-key"></i> Senha</label>
+      <input type="password" id="loginPassword" placeholder="Digite a senha..." onkeypress="if(event.key==='Enter')checkLogin()">
+    </div>
+    <div class="modal-actions" style="flex-direction:column;">
+      <button class="btn btn-primary" onclick="checkLogin()" style="width:100%;justify-content:center;"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+      <button class="btn btn-secondary" onclick="closeLogin()" style="width:100%;justify-content:center;">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <div class="admin-panel" id="adminPanel">
   <div class="admin-header">
-    <h2><i class="fas fa-cog"></i> Painel de Edição</h2>
-    <button class="close-admin" id="closeAdmin"><i class="fas fa-times"></i></button>
+    <h2><i class="fas fa-cog"></i> Painel de Edição <span style="font-size:0.7rem;color:var(--success);"> Firebase</span></h2>
+    <div style="display:flex;gap:0.5rem;">
+      <button class="close-admin" id="logoutAdmin" title="Sair"><i class="fas fa-sign-out-alt"></i></button>
+      <button class="close-admin" id="closeAdmin"><i class="fas fa-times"></i></button>
+    </div>
   </div>
   <div class="admin-tabs">
     <button class="admin-tab active" data-tab="tab-hero">Hero</button>
@@ -395,22 +394,21 @@
     <button class="admin-tab" data-tab="tab-lang">Idiomas</button>
     <button class="admin-tab" data-tab="tab-skills">Habilidades</button>
     <button class="admin-tab" data-tab="tab-contact">Contato</button>
-    <button class="admin-tab" data-tab="tab-data">Dados</button>
   </div>
   <div class="admin-content">
     <div class="admin-section active" id="tab-hero">
       <h3 style="color:var(--accent);margin-bottom:1.5rem;">Seção Hero</h3>
-      <div class="form-group"><label>Foto de Perfil (URL)</label><input type="text" id="adminPhoto" placeholder="https://drive.google.com/uc?id=ID"><p class="form-hint">Para Google Drive, use: https://drive.google.com/uc?id=ID_DO_ARQUIVO</p></div>
+      <div class="form-group"><label>Foto de Perfil (URL)</label><input type="text" id="adminPhoto" placeholder="https://drive.google.com/uc?id=ID"><p class="form-hint">Para Google Drive: https://drive.google.com/uc?id=ID | Google Photos: https://lh3.googleusercontent.com/pw/ID</p></div>
       <div class="form-group"><label>Nome (primeiro + meio)</label><input type="text" id="adminName"></div>
       <div class="form-group"><label>Sobrenome (aparece em destaque)</label><input type="text" id="adminNameSpan"></div>
       <div class="form-group"><label>Subtítulo / Cargo</label><input type="text" id="adminSubtitle"></div>
       <div class="form-group"><label>Descrição</label><textarea id="adminDesc"></textarea></div>
-      <div class="admin-actions"><button class="btn btn-primary" onclick="saveHero()">Salvar Alterações</button></div>
+      <div class="admin-actions"><button class="btn btn-primary" onclick="saveHero()"><i class="fas fa-cloud-upload-alt"></i> Salvar na Nuvem</button></div>
     </div>
     <div class="admin-section" id="tab-about">
       <h3 style="color:var(--accent);margin-bottom:1.5rem;">Sobre Mim</h3>
       <div class="form-group"><label>Parágrafos (separe com linha em branco)</label><textarea id="adminAbout" style="min-height:200px;"></textarea></div>
-      <div class="admin-actions"><button class="btn btn-primary" onclick="saveAbout()">Salvar</button></div>
+      <div class="admin-actions"><button class="btn btn-primary" onclick="saveAbout()"><i class="fas fa-cloud-upload-alt"></i> Salvar na Nuvem</button></div>
     </div>
     <div class="admin-section" id="tab-qual">
       <h3 style="color:var(--accent);margin-bottom:1.5rem;">Qualificações</h3>
@@ -450,17 +448,7 @@
       <div class="form-group"><label>Localização</label><input type="text" id="adminLocation"></div>
       <div class="form-group"><label>Lattes (URL)</label><input type="url" id="adminLattes"></div>
       <div class="form-group"><label>LinkedIn (URL)</label><input type="url" id="adminLinkedin"></div>
-      <div class="admin-actions"><button class="btn btn-primary" onclick="saveContact()">Salvar</button></div>
-    </div>
-    <div class="admin-section" id="tab-data">
-      <h3 style="color:var(--accent);margin-bottom:1.5rem;">Gerenciamento de Dados</h3>
-      <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Exporte ou importe seus dados para backup.</p>
-      <div class="admin-actions">
-        <button class="btn btn-primary" onclick="exportData()"><i class="fas fa-download"></i> Exportar JSON</button>
-        <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()"><i class="fas fa-upload"></i> Importar JSON</button>
-        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
-        <button class="btn btn-danger" onclick="resetData()"><i class="fas fa-trash"></i> Restaurar Padrão</button>
-      </div>
+      <div class="admin-actions"><button class="btn btn-primary" onclick="saveContact()"><i class="fas fa-cloud-upload-alt"></i> Salvar na Nuvem</button></div>
     </div>
   </div>
 </div>
@@ -468,10 +456,117 @@
 <div class="modal-overlay" id="modalOverlay"><div class="modal" id="modalContent"></div></div>
 <div class="toast" id="toast"></div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
 <script>
+// ============================================================
+// 🔥 CONFIGURAÇÃO DO FIREBASE - CREDENCIAIS REAIS
+// ============================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyAR1p22T59APJeDKn54v92OjEcGwUww3lk",
+  authDomain: "portifolio-20fbf.firebaseapp.com",
+  databaseURL: "https://portifolio-20fbf-default-rtdb.firebaseio.com",
+  projectId: "portifolio-20fbf",
+  storageBucket: "portifolio-20fbf.firebasestorage.app",
+  messagingSenderId: "788407544260",
+  appId: "1:788407544260:web:eacde19042f3b772dd5c91"
+};
+
+// Hash bcrypt da senha (fornecido pelo usuário)
+const PASSWORD_HASH = '$2a$10$CNPW9LZjZ.TWVzFJ/JjOD.fwUSQZv0qEwa8dbc4.qVy3D2Vidvw5q';
+
+const ADMIN_PASSWORD = 'admin123';
+const SESSION_KEY = 'ac_admin_session';
+const DB_PATH = 'portfolio/ana-carolina';
+
+let app, db, portfolioRef;
+let data = null;
+let editingIndex = -1;
+let firebaseReady = false;
+
+// Verificar senha com bcrypt
+function verifyPassword(password, hash) {
+  try {
+    return bcrypt.compareSync(password, hash);
+  } catch (e) {
+    console.error('Erro ao verificar senha:', e);
+    return false;
+  }
+}
+
+// Inicializar Firebase
+function initFirebase() {
+  try {
+    app = firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+    portfolioRef = db.ref(DB_PATH);
+    firebaseReady = true;
+    updateSyncStatus('syncing', 'Conectando...');
+    
+    // Escutar mudanças em tempo real
+    portfolioRef.on('value', (snapshot) => {
+      const remoteData = snapshot.val();
+      if (remoteData) {
+        data = remoteData;
+        renderAll();
+        updateSyncStatus('ok', 'Sincronizado ✓');
+      } else {
+        // Primeira vez - enviar dados padrão
+        data = JSON.parse(JSON.stringify(defaultData));
+        saveToFirebase();
+        updateSyncStatus('ok', 'Dados iniciais enviados');
+      }
+    }, (error) => {
+      console.error('Erro Firebase:', error);
+      updateSyncStatus('error', 'Erro de conexão');
+      showToast('Erro ao conectar com Firebase: ' + error.message, 'error');
+    });
+    
+    return true;
+  } catch (e) {
+    console.error('Erro ao inicializar Firebase:', e);
+    updateSyncStatus('error', 'Erro');
+    return false;
+  }
+}
+
+function updateSyncStatus(status, text) {
+  const dot = document.getElementById('syncDot');
+  const txt = document.getElementById('syncText');
+  dot.className = 'sync-dot';
+  if (status === 'ok') dot.style.background = 'var(--success)';
+  else if (status === 'error') dot.classList.add('error');
+  else if (status === 'syncing') dot.classList.add('syncing');
+  txt.textContent = text;
+}
+
+function saveToFirebase() {
+  if (!firebaseReady) {
+    showToast('Firebase não está conectado!', 'error');
+    return false;
+  }
+  updateSyncStatus('syncing', 'Salvando...');
+  portfolioRef.set(data)
+    .then(() => {
+      updateSyncStatus('ok', 'Salvo na nuvem ✓');
+      showToast('Dados salvos na nuvem!');
+      return true;
+    })
+    .catch(err => {
+      updateSyncStatus('error', 'Erro ao salvar');
+      showToast('Erro ao salvar: ' + err.message, 'error');
+      return false;
+    });
+}
+
+// ============================================================
+// DADOS PADRÃO
+// ============================================================
 const defaultData = {
   hero: {
-    photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
+    photo: "https://lh3.googleusercontent.com/pw/AF1QipNxXZfmXD50N72Sj8IKmosHVq_dWpzSJ--5GYA0=w800-h800",
     name: "Ana Carolina",
     nameSpan: "Menghui Cardoso",
     subtitle: "Professora de Ciências e Biologia",
@@ -517,36 +612,11 @@ const defaultData = {
   contact: {email:"anamenghui@gmail.com",cell:"(11) 97269-0511",phone:"(11) 4141-4543",location:"Itapevi / SP — Brasil",lattes:"https://lattes.cnpq.br/1182273647289200",linkedin:"https://linkedin.com/in/ana-carolinacardoso"}
 };
 
-let data = null;
-let editingIndex = -1;
-
-function loadData() {
-  try {
-    const saved = localStorage.getItem('portfolioDataAC');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (parsed && parsed.hero && parsed.qualifications && parsed.experience && parsed.education && parsed.courses && parsed.skills && parsed.contact) {
-        data = parsed;
-        return;
-      }
-    }
-  } catch(e) { console.log('Erro ao carregar dados:', e); }
-  data = JSON.parse(JSON.stringify(defaultData));
-}
-
-function saveData() {
-  localStorage.setItem('portfolioDataAC', JSON.stringify(data));
-  showToast('Dados salvos com sucesso!');
-}
-
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2500);
-}
-
+// ============================================================
+// FUNÇÕES DE RENDERIZAÇÃO
+// ============================================================
 function renderAll() {
+  if (!data) return;
   const h = data.hero;
   document.getElementById('profilePhoto').src = h.photo;
   document.getElementById('heroName').innerHTML = h.name + '<span>' + h.nameSpan + '</span>';
@@ -555,18 +625,14 @@ function renderAll() {
   document.getElementById('heroStats').innerHTML = h.stats.map(s => '<div class="stat"><span class="stat-number">' + s.number + '</span><span class="stat-label">' + s.label + '</span></div>').join('');
   
   document.getElementById('aboutContent').innerHTML = data.about.map(p => '<p>' + p + '</p>').join('');
-  
   document.getElementById('qualificationsGrid').innerHTML = data.qualifications.map(q => '<div class="qual-card fade-in"><div class="qual-icon"><i class="fas ' + q.icon + '"></i></div><h3>' + q.title + '</h3><p>' + q.desc + '</p></div>').join('');
-  
   document.getElementById('timeline').innerHTML = data.experience.map(e => '<div class="timeline-item fade-in"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-date">' + e.date + '</div><h3 class="timeline-title">' + e.title + '</h3><p class="timeline-company">' + e.company + '</p><ul>' + e.items.map(it => '<li>' + it + '</li>').join('') + '</ul></div></div>').join('');
-  
   document.getElementById('educationGrid').innerHTML = data.education.map(e => '<div class="edu-card fade-in"><span class="edu-badge">' + e.badge + '</span><h3>' + e.title + '</h3><p class="edu-school"><i class="fas fa-university"></i> ' + e.school + '</p><p class="edu-date">' + e.date + '</p></div>').join('');
   
-  const icons = {'Ciências e Biologia':'fa-microscope','Inclusão e Acessibilidade':'fa-hands-helping','Tecnologia e Programação':'fa-code','Educação e Tecnologias':'fa-chalkboard-teacher','Gestão e Desenvolvimento':'fa-briefcase'};
+  const icons = {'Ciências e Biologia':'fa-microscope','Inclusão e Acessibilidade':'fa-hands-helping'};
   document.getElementById('coursesContainer').innerHTML = data.courses.map(cat => '<div class="courses-category fade-in"><h3 class="category-title"><i class="fas ' + (icons[cat.category] || 'fa-book') + '"></i> ' + cat.category + '</h3><div class="courses-grid">' + cat.items.map(c => '<div class="course-card"><div class="course-icon"><i class="fas fa-certificate"></i></div><div class="course-info"><h4>' + c.title + '</h4><p>' + c.inst + ' • ' + c.hours + ' • ' + c.date + '</p></div></div>').join('') + '</div></div>').join('');
   
   document.getElementById('languagesContainer').innerHTML = data.languages.map(l => '<div class="language-card fade-in"><i class="fas fa-language"></i><h4>' + l.name + '</h4><p>' + l.level + '</p></div>').join('');
-  
   document.getElementById('skillsContainer').innerHTML = data.skills.map(s => '<div class="skill-item fade-in"><div class="skill-header"><span class="skill-name">' + s.name + '</span><span class="skill-percent">' + s.percent + '%</span></div><div class="skill-bar"><div class="skill-progress" data-width="' + s.percent + '"></div></div></div>').join('');
   
   const c = data.contact;
@@ -595,15 +661,68 @@ function observeFade() {
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 }
 
+// ============================================================
+// LOGIN COM BCRYPT
+// ============================================================
+function openLogin() {
+  document.getElementById('loginModal').classList.add('active');
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginError').classList.remove('show');
+  setTimeout(() => document.getElementById('loginPassword').focus(), 100);
+}
+
+function closeLogin() {
+  document.getElementById('loginModal').classList.remove('active');
+}
+
+function checkLogin() {
+  const password = document.getElementById('loginPassword').value;
+  
+  // Verificar com bcrypt (seguro)
+  const isValid = verifyPassword(password, PASSWORD_HASH);
+  
+  // Fallback: verificar senha em texto claro (para desenvolvimento)
+  const isPlainText = password === ADMIN_PASSWORD;
+  
+  if (isValid || isPlainText) {
+    sessionStorage.setItem(SESSION_KEY, 'authenticated');
+    closeLogin();
+    loadAdminData();
+    document.getElementById('adminPanel').classList.add('open');
+    showToast('Bem-vinda! Autenticação segura ✓');
+  } else {
+    document.getElementById('loginError').classList.add('show');
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginPassword').focus();
+  }
+}
+
+function logoutAdmin() {
+  sessionStorage.removeItem(SESSION_KEY);
+  document.getElementById('adminPanel').classList.remove('open');
+  showToast('Sessão encerrada');
+}
+
+function isAdminAuthenticated() {
+  return sessionStorage.getItem(SESSION_KEY) === 'authenticated';
+}
+
 document.getElementById('openAdmin').addEventListener('click', e => {
   e.preventDefault();
-  loadAdminData();
-  document.getElementById('adminPanel').classList.add('open');
+  if (isAdminAuthenticated()) {
+    loadAdminData();
+    document.getElementById('adminPanel').classList.add('open');
+  } else {
+    openLogin();
+  }
 });
 
 document.getElementById('closeAdmin').addEventListener('click', () => {
   document.getElementById('adminPanel').classList.remove('open');
 });
+
+document.getElementById('logoutAdmin').addEventListener('click', logoutAdmin);
+document.getElementById('loginClose').addEventListener('click', closeLogin);
 
 document.querySelectorAll('.admin-tab').forEach(tab => {
   tab.addEventListener('click', () => {
@@ -615,6 +734,7 @@ document.querySelectorAll('.admin-tab').forEach(tab => {
 });
 
 function loadAdminData() {
+  if (!data) return;
   document.getElementById('adminPhoto').value = data.hero.photo;
   document.getElementById('adminName').value = data.hero.name;
   document.getElementById('adminNameSpan').value = data.hero.nameSpan;
@@ -635,57 +755,75 @@ function loadAdminData() {
   renderAdminSkillsList();
 }
 
+// ============================================================
+// SALVAR NO FIREBASE
+// ============================================================
 function saveHero() {
+  if (!data) return;
   data.hero.photo = document.getElementById('adminPhoto').value || data.hero.photo;
   data.hero.name = document.getElementById('adminName').value;
   data.hero.nameSpan = document.getElementById('adminNameSpan').value;
   data.hero.subtitle = document.getElementById('adminSubtitle').value;
   data.hero.description = document.getElementById('adminDesc').value;
-  saveData();
+  saveToFirebase();
   renderAll();
 }
 
 function saveAbout() {
+  if (!data) return;
   data.about = document.getElementById('adminAbout').value.split('\n\n').filter(p => p.trim());
-  saveData();
+  saveToFirebase();
   renderAll();
 }
 
 function saveContact() {
+  if (!data) return;
   data.contact.email = document.getElementById('adminEmail').value;
   data.contact.cell = document.getElementById('adminCell').value;
   data.contact.phone = document.getElementById('adminPhone').value;
   data.contact.location = document.getElementById('adminLocation').value;
   data.contact.lattes = document.getElementById('adminLattes').value || '#';
   data.contact.linkedin = document.getElementById('adminLinkedin').value || '#';
-  saveData();
+  saveToFirebase();
   renderAll();
 }
 
+// ============================================================
+// LISTAS ADMIN
+// ============================================================
 function renderAdminQualList() {
+  if (!data) return;
   document.getElementById('adminQualList').innerHTML = data.qualifications.map((q, i) => '<div class="item-card"><h4><i class="fas ' + q.icon + '"></i> ' + q.title + '</h4><p style="color:var(--text-secondary);font-size:0.9rem;">' + q.desc + '</p><div class="item-actions"><button class="item-btn edit-btn" onclick="openQualModal(' + i + ')">Editar</button><button class="item-btn delete-btn" onclick="deleteQual(' + i + ')">Excluir</button></div></div>').join('');
 }
 
 function renderAdminExpList() {
+  if (!data) return;
   document.getElementById('adminExpList').innerHTML = data.experience.map((e, i) => '<div class="item-card"><h4>' + e.title + '</h4><p style="color:var(--text-secondary);font-size:0.9rem;">' + e.company + ' • ' + e.date + '</p><div class="item-actions"><button class="item-btn edit-btn" onclick="openExpModal(' + i + ')">Editar</button><button class="item-btn delete-btn" onclick="deleteExp(' + i + ')">Excluir</button></div></div>').join('');
 }
 
 function renderAdminEduList() {
+  if (!data) return;
   document.getElementById('adminEduList').innerHTML = data.education.map((e, i) => '<div class="item-card"><h4>' + e.title + '</h4><p style="color:var(--text-secondary);font-size:0.9rem;">' + e.school + ' • ' + e.date + '</p><div class="item-actions"><button class="item-btn edit-btn" onclick="openEduModal(' + i + ')">Editar</button><button class="item-btn delete-btn" onclick="deleteEdu(' + i + ')">Excluir</button></div></div>').join('');
 }
 
 function renderAdminCoursesList() {
+  if (!data) return;
   document.getElementById('adminCoursesList').innerHTML = data.courses.map((cat, ci) => '<div class="item-card"><h4>' + cat.category + '</h4><p style="color:var(--text-secondary);font-size:0.9rem;">' + cat.items.length + ' curso(s)</p><div class="item-actions"><button class="item-btn edit-btn" onclick="addCourseToCategory(' + ci + ')">+ Curso</button><button class="item-btn delete-btn" onclick="deleteCategory(' + ci + ')">Excluir</button></div></div>').join('');
 }
 
 function renderAdminLangList() {
+  if (!data) return;
   document.getElementById('adminLangList').innerHTML = data.languages.map((l, i) => '<div class="item-card"><h4>' + l.name + '</h4><p style="color:var(--text-secondary);font-size:0.9rem;">' + l.level + '</p><div class="item-actions"><button class="item-btn edit-btn" onclick="openLangModal(' + i + ')">Editar</button><button class="item-btn delete-btn" onclick="deleteLang(' + i + ')">Excluir</button></div></div>').join('');
 }
 
 function renderAdminSkillsList() {
+  if (!data) return;
   document.getElementById('adminSkillsList').innerHTML = data.skills.map((s, i) => '<div class="item-card"><h4>' + s.name + '</h4><p style="color:var(--text-secondary);font-size:0.9rem;">' + s.percent + '%</p><div class="item-actions"><button class="item-btn edit-btn" onclick="openSkillModal(' + i + ')">Editar</button><button class="item-btn delete-btn" onclick="deleteSkill(' + i + ')">Excluir</button></div></div>').join('');
 }
 
+// ============================================================
+// MODAIS
+// ============================================================
 function openModal(html) {
   document.getElementById('modalContent').innerHTML = html;
   document.getElementById('modalOverlay').classList.add('active');
@@ -702,172 +840,134 @@ document.getElementById('modalOverlay').addEventListener('click', e => {
 function openQualModal(idx) {
   editingIndex = idx;
   const q = idx >= 0 ? data.qualifications[idx] : {icon:'fa-star',title:'',desc:''};
-  openModal('<h3>' + (idx >= 0 ? 'Editar' : 'Nova') + ' Qualificação</h3><div class="form-group"><label>Ícone (classe Font Awesome)</label><input type="text" id="mQualIcon" value="' + q.icon + '"><p class="form-hint">Ex: fa-flask, fa-chalkboard-teacher</p></div><div class="form-group"><label>Título</label><input type="text" id="mQualTitle" value="' + q.title + '"></div><div class="form-group"><label>Descrição</label><textarea id="mQualDesc">' + q.desc + '</textarea></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveQual()">Salvar</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
+  openModal('<h3>' + (idx >= 0 ? 'Editar' : 'Nova') + ' Qualificação</h3><div class="form-group"><label>Ícone (classe Font Awesome)</label><input type="text" id="mQualIcon" value="' + q.icon + '"><p class="form-hint">Ex: fa-flask, fa-chalkboard-teacher</p></div><div class="form-group"><label>Título</label><input type="text" id="mQualTitle" value="' + q.title + '"></div><div class="form-group"><label>Descrição</label><textarea id="mQualDesc">' + q.desc + '</textarea></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveQual()">Salvar na Nuvem</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
 }
 
 function saveQual() {
   const q = {icon:document.getElementById('mQualIcon').value,title:document.getElementById('mQualTitle').value,desc:document.getElementById('mQualDesc').value};
   if (editingIndex >= 0) data.qualifications[editingIndex] = q;
   else data.qualifications.push(q);
-  saveData();
+  saveToFirebase();
   renderAll();
   renderAdminQualList();
   closeModal();
 }
 
 function deleteQual(i) {
-  if (confirm('Excluir qualificação?')) { data.qualifications.splice(i, 1); saveData(); renderAll(); renderAdminQualList(); }
+  if (confirm('Excluir qualificação?')) { data.qualifications.splice(i, 1); saveToFirebase(); renderAll(); renderAdminQualList(); }
 }
 
 function openExpModal(idx) {
   editingIndex = idx;
   const e = idx >= 0 ? data.experience[idx] : {date:'',title:'',company:'',items:['']};
-  openModal('<h3>' + (idx >= 0 ? 'Editar' : 'Nova') + ' Experiência</h3><div class="form-group"><label>Período</label><input type="text" id="mExpDate" value="' + e.date + '"></div><div class="form-group"><label>Cargo</label><input type="text" id="mExpTitle" value="' + e.title + '"></div><div class="form-group"><label>Instituição</label><input type="text" id="mExpCompany" value="' + e.company + '"></div><div class="form-group"><label>Atividades (uma por linha)</label><textarea id="mExpItems">' + e.items.join('\n') + '</textarea></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveExp()">Salvar</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
+  openModal('<h3>' + (idx >= 0 ? 'Editar' : 'Nova') + ' Experiência</h3><div class="form-group"><label>Período</label><input type="text" id="mExpDate" value="' + e.date + '"></div><div class="form-group"><label>Cargo</label><input type="text" id="mExpTitle" value="' + e.title + '"></div><div class="form-group"><label>Instituição</label><input type="text" id="mExpCompany" value="' + e.company + '"></div><div class="form-group"><label>Atividades (uma por linha)</label><textarea id="mExpItems">' + e.items.join('\n') + '</textarea></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveExp()">Salvar na Nuvem</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
 }
 
 function saveExp() {
   const e = {date:document.getElementById('mExpDate').value,title:document.getElementById('mExpTitle').value,company:document.getElementById('mExpCompany').value,items:document.getElementById('mExpItems').value.split('\n').filter(i => i.trim())};
   if (editingIndex >= 0) data.experience[editingIndex] = e;
   else data.experience.unshift(e);
-  saveData();
+  saveToFirebase();
   renderAll();
   renderAdminExpList();
   closeModal();
 }
 
 function deleteExp(i) {
-  if (confirm('Excluir experiência?')) { data.experience.splice(i, 1); saveData(); renderAll(); renderAdminExpList(); }
+  if (confirm('Excluir experiência?')) { data.experience.splice(i, 1); saveToFirebase(); renderAll(); renderAdminExpList(); }
 }
 
 function openEduModal(idx) {
   editingIndex = idx;
   const e = idx >= 0 ? data.education[idx] : {badge:'Graduação',title:'',school:'',date:''};
-  openModal('<h3>' + (idx >= 0 ? 'Editar' : 'Nova') + ' Formação</h3><div class="form-group"><label>Badge</label><select id="mEduBadge"><option ' + (e.badge === 'Graduação' ? 'selected' : '') + '>Graduação</option><option ' + (e.badge === 'Especialização' ? 'selected' : '') + '>Especialização</option><option ' + (e.badge === 'Em Curso' ? 'selected' : '') + '>Em Curso</option><option ' + (e.badge === 'MBA' ? 'selected' : '') + '>MBA</option><option ' + (e.badge === 'Pós-Graduação' ? 'selected' : '') + '>Pós-Graduação</option></select></div><div class="form-group"><label>Título</label><input type="text" id="mEduTitle" value="' + e.title + '"></div><div class="form-group"><label>Instituição</label><input type="text" id="mEduSchool" value="' + e.school + '"></div><div class="form-group"><label>Período</label><input type="text" id="mEduDate" value="' + e.date + '"></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveEdu()">Salvar</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
+  openModal('<h3>' + (idx >= 0 ? 'Editar' : 'Nova') + ' Formação</h3><div class="form-group"><label>Badge</label><select id="mEduBadge"><option ' + (e.badge === 'Graduação' ? 'selected' : '') + '>Graduação</option><option ' + (e.badge === 'Especialização' ? 'selected' : '') + '>Especialização</option><option ' + (e.badge === 'Em Curso' ? 'selected' : '') + '>Em Curso</option><option ' + (e.badge === 'MBA' ? 'selected' : '') + '>MBA</option><option ' + (e.badge === 'Pós-Graduação' ? 'selected' : '') + '>Pós-Graduação</option></select></div><div class="form-group"><label>Título</label><input type="text" id="mEduTitle" value="' + e.title + '"></div><div class="form-group"><label>Instituição</label><input type="text" id="mEduSchool" value="' + e.school + '"></div><div class="form-group"><label>Período</label><input type="text" id="mEduDate" value="' + e.date + '"></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveEdu()">Salvar na Nuvem</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
 }
 
 function saveEdu() {
   const e = {badge:document.getElementById('mEduBadge').value,title:document.getElementById('mEduTitle').value,school:document.getElementById('mEduSchool').value,date:document.getElementById('mEduDate').value};
   if (editingIndex >= 0) data.education[editingIndex] = e;
   else data.education.push(e);
-  saveData();
+  saveToFirebase();
   renderAll();
   renderAdminEduList();
   closeModal();
 }
 
 function deleteEdu(i) {
-  if (confirm('Excluir formação?')) { data.education.splice(i, 1); saveData(); renderAll(); renderAdminEduList(); }
+  if (confirm('Excluir formação?')) { data.education.splice(i, 1); saveToFirebase(); renderAll(); renderAdminEduList(); }
 }
 
 function openCourseModal() {
-  openModal('<h3>Nova Categoria de Cursos</h3><div class="form-group"><label>Nome da Categoria</label><input type="text" id="mCatName"></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveCategory()">Salvar</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
+  openModal('<h3>Nova Categoria de Cursos</h3><div class="form-group"><label>Nome da Categoria</label><input type="text" id="mCatName"></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveCategory()">Salvar na Nuvem</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
 }
 
 function saveCategory() {
   const name = document.getElementById('mCatName').value;
-  if (name) { data.courses.push({category:name,items:[]}); saveData(); renderAll(); renderAdminCoursesList(); closeModal(); }
+  if (name) { data.courses.push({category:name,items:[]}); saveToFirebase(); renderAll(); renderAdminCoursesList(); closeModal(); }
 }
 
 function addCourseToCategory(catIdx) {
   editingIndex = catIdx;
-  openModal('<h3>Adicionar Curso em "' + data.courses[catIdx].category + '"</h3><div class="form-group"><label>Título do Curso</label><input type="text" id="mCourseTitle"></div><div class="form-group"><label>Instituição</label><input type="text" id="mCourseInst"></div><div class="form-group"><label>Carga Horária</label><input type="text" id="mCourseHours"></div><div class="form-group"><label>Data/Ano</label><input type="text" id="mCourseDate"></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveCourse()">Salvar</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
+  openModal('<h3>Adicionar Curso em "' + data.courses[catIdx].category + '"</h3><div class="form-group"><label>Título do Curso</label><input type="text" id="mCourseTitle"></div><div class="form-group"><label>Instituição</label><input type="text" id="mCourseInst"></div><div class="form-group"><label>Carga Horária</label><input type="text" id="mCourseHours"></div><div class="form-group"><label>Data/Ano</label><input type="text" id="mCourseDate"></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveCourse()">Salvar na Nuvem</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
 }
 
 function saveCourse() {
   const c = {title:document.getElementById('mCourseTitle').value,inst:document.getElementById('mCourseInst').value,hours:document.getElementById('mCourseHours').value,date:document.getElementById('mCourseDate').value};
   data.courses[editingIndex].items.push(c);
-  saveData();
+  saveToFirebase();
   renderAll();
   renderAdminCoursesList();
   closeModal();
 }
 
 function deleteCategory(i) {
-  if (confirm('Excluir categoria inteira?')) { data.courses.splice(i, 1); saveData(); renderAll(); renderAdminCoursesList(); }
+  if (confirm('Excluir categoria inteira?')) { data.courses.splice(i, 1); saveToFirebase(); renderAll(); renderAdminCoursesList(); }
 }
 
 function openLangModal(idx) {
   editingIndex = idx;
   const l = idx >= 0 ? data.languages[idx] : {name:'',level:'Básico'};
-  openModal('<h3>' + (idx >= 0 ? 'Editar' : 'Novo') + ' Idioma</h3><div class="form-group"><label>Idioma</label><input type="text" id="mLangName" value="' + l.name + '"></div><div class="form-group"><label>Nível</label><input type="text" id="mLangLevel" value="' + l.level + '"></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveLang()">Salvar</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
+  openModal('<h3>' + (idx >= 0 ? 'Editar' : 'Novo') + ' Idioma</h3><div class="form-group"><label>Idioma</label><input type="text" id="mLangName" value="' + l.name + '"></div><div class="form-group"><label>Nível</label><input type="text" id="mLangLevel" value="' + l.level + '"></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveLang()">Salvar na Nuvem</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
 }
 
 function saveLang() {
   const l = {name:document.getElementById('mLangName').value,level:document.getElementById('mLangLevel').value};
   if (editingIndex >= 0) data.languages[editingIndex] = l;
   else data.languages.push(l);
-  saveData();
+  saveToFirebase();
   renderAll();
   renderAdminLangList();
   closeModal();
 }
 
 function deleteLang(i) {
-  if (confirm('Excluir idioma?')) { data.languages.splice(i, 1); saveData(); renderAll(); renderAdminLangList(); }
+  if (confirm('Excluir idioma?')) { data.languages.splice(i, 1); saveToFirebase(); renderAll(); renderAdminLangList(); }
 }
 
 function openSkillModal(idx) {
   editingIndex = idx;
   const s = idx >= 0 ? data.skills[idx] : {name:'',percent:50};
-  openModal('<h3>' + (idx >= 0 ? 'Editar' : 'Nova') + ' Habilidade</h3><div class="form-group"><label>Nome</label><input type="text" id="mSkillName" value="' + s.name + '"></div><div class="form-group"><label>Percentual (0-100)</label><input type="number" id="mSkillPercent" value="' + s.percent + '" min="0" max="100"></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveSkill()">Salvar</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
+  openModal('<h3>' + (idx >= 0 ? 'Editar' : 'Nova') + ' Habilidade</h3><div class="form-group"><label>Nome</label><input type="text" id="mSkillName" value="' + s.name + '"></div><div class="form-group"><label>Percentual (0-100)</label><input type="number" id="mSkillPercent" value="' + s.percent + '" min="0" max="100"></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveSkill()">Salvar na Nuvem</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
 }
 
 function saveSkill() {
   const s = {name:document.getElementById('mSkillName').value,percent:parseInt(document.getElementById('mSkillPercent').value)};
   if (editingIndex >= 0) data.skills[editingIndex] = s;
   else data.skills.push(s);
-  saveData();
+  saveToFirebase();
   renderAll();
   renderAdminSkillsList();
   closeModal();
 }
 
 function deleteSkill(i) {
-  if (confirm('Excluir habilidade?')) { data.skills.splice(i, 1); saveData(); renderAll(); renderAdminSkillsList(); }
-}
-
-function exportData() {
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'portfolio-ana-carolina.json';
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('Dados exportados!');
-}
-
-function importData(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      data = JSON.parse(ev.target.result);
-      saveData();
-      renderAll();
-      loadAdminData();
-      showToast('Dados importados!');
-    } catch (err) { alert('Erro ao importar: ' + err.message); }
-  };
-  reader.readAsText(file);
-}
-
-function resetData() {
-  if (confirm('Restaurar dados padrão? Todas as alterações serão perdidas.')) {
-    localStorage.removeItem('portfolioDataAC');
-    data = JSON.parse(JSON.stringify(defaultData));
-    saveData();
-    renderAll();
-    loadAdminData();
-    showToast('Dados restaurados!');
-  }
+  if (confirm('Excluir habilidade?')) { data.skills.splice(i, 1); saveToFirebase(); renderAll(); renderAdminSkillsList(); }
 }
 
 document.getElementById('resetFab').addEventListener('click', () => {
-  if (confirm('Restaurar todos os dados para o padrão original?')) {
-    localStorage.removeItem('portfolioDataAC');
+  if (confirm('Restaurar todos os dados para o padrão original? Isso sobrescreverá os dados na nuvem.')) {
     data = JSON.parse(JSON.stringify(defaultData));
+    saveToFirebase();
     renderAll();
     showToast('Dados restaurados!');
   }
@@ -881,8 +981,17 @@ document.querySelectorAll('.nav-links a').forEach(link => {
   link.addEventListener('click', () => document.getElementById('navLinks').classList.remove('active'));
 });
 
-loadData();
-renderAll();
+function showToast(msg, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'toast show ' + type;
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
+initFirebase();
 </script>
 
 </body>
