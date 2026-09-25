@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ana Carolina Menghui Cardoso | Portfólio Profissional</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/index.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg-primary: #0a0f14;
+    --bg-secondary: #111820;
+    --bg-card: #1a2330;
+    --accent: #2dd4a8;
+    --accent-hover: #5eebc0;
+    --accent-soft: rgba(45, 212, 168, 0.15);
+    --text-primary: #f0f4f8;
+    --text-secondary: #a0aec0;
+    --border: #2a3545;
+    --danger: #e74c3c;
+    --success: #27ae60;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg-primary); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+  
+  nav { position: fixed; top: 0; width: 100%; padding: 1.2rem 5%; background: rgba(10,15,20,0.9); backdrop-filter: blur(12px); z-index: 1000; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+  .logo { font-size: 1.3rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+  .nav-links a { color: var(--text-primary); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s; position: relative; }
+  .nav-links a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--accent); transition: width 0.3s; }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a:hover::after { width: 100%; }
+  .admin-btn { background: var(--accent); color: var(--bg-primary) !important; padding: 0.5rem 1rem; border-radius: 50px; font-weight: 600; }
+  .admin-btn:hover { background: var(--accent-hover); }
+  .admin-btn::after { display: none !important; }
+  .menu-toggle { display: none; font-size: 1.5rem; cursor: pointer; color: var(--text-primary); background: none; border: none; }
+  
+  .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 8rem 5% 4rem; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -50%; right: -20%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(45,212,168,0.15) 0%, transparent 70%); border-radius: 50%; animation: pulse 8s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
+  .hero-content { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; max-width: 1300px; width: 100%; align-items: center; position: relative; z-index: 2; }
+  .hero-text h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 1rem; }
+  .hero-text h1 span { color: var(--accent); display: block; }
+  .hero-subtitle { font-size: 1.3rem; color: var(--text-secondary); margin-bottom: 1.5rem; font-weight: 400; }
+  .hero-description { color: var(--text-secondary); margin-bottom: 2rem; font-size: 1rem; max-width: 500px; }
+  .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn { padding: 0.9rem 2rem; border-radius: 50px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; border: none; }
+  .btn-primary { background: var(--accent); color: var(--bg-primary); }
+  .btn-primary:hover { background: var(--accent-hover); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(45,212,168,0.3); }
+  .btn-secondary { background: transparent; color: var(--text-primary); border: 2px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px); }
+  .hero-image { display: flex; justify-content: center; align-items: center; }
+  .photo-container { position: relative; width: 380px; height: 380px; }
+  .photo-container::before { content: ''; position: absolute; inset: -15px; border: 2px solid var(--accent); border-radius: 50%; animation: rotate 20s linear infinite; }
+  @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .photo-container img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 4px solid var(--bg-card); box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  .hero-stats { display: flex; gap: 2rem; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+  .stat { text-align: center; }
+  .stat-number { font-size: 2rem; font-weight: 800; color: var(--accent); display: block; }
+  .stat-label { font-size: 0.85rem; color: var(--text-secondary); }
+  
+  section { padding: 6rem 5%; position: relative; }
+  .section-header { text-align: center; margin-bottom: 4rem; }
+  .section-tag { color: var(--accent); font-size: 0.9rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .section-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; }
+  .section-subtitle { color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+  
+  .about { background: var(--bg-secondary); }
+  .about-content { max-width: 1000px; margin: 0 auto; text-align: center; font-size: 1.1rem; color: var(--text-secondary); line-height: 1.8; }
+  .about-content p { margin-bottom: 1.5rem; }
+  
+  .qualifications-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+  .qual-card { background: var(--bg-card); padding: 2.5rem 2rem; border-radius: 16px; border: 1px solid var(--border); transition: all 0.4s; position: relative; overflow: hidden; }
+  .qual-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--accent), transparent); transform: scaleX(0); transform-origin: left; transition: transform 0.4s; }
+  .qual-card:hover { transform: translateY(-8px); border-color: var(--accent); }
+  .qual-card:hover::before { transform: scaleX(1); }
+  .qual-icon { width: 60px; height: 60px; background: var(--accent-soft); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--accent); margin-bottom: 1.5rem; }
+  .qual-card h3 { font-size: 1.2rem; margin-bottom: 0.8rem; }
+  .qual-card p { color: var(--text-secondary); font-size: 0.95rem; }
+  
+  .timeline { max-width: 900px; margin: 0 auto; position: relative; }
+  .timeline::before { content: ''; position: absolute; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background: var(--border); }
+  .timeline-item { display: flex; justify-content: flex-end; padding-right: 50%; position: relative; margin-bottom: 3rem; }
+  .timeline-item:nth-child(even) { justify-content: flex-start; padding-right: 0; padding-left: 50%; }
+  .timeline-dot { position: absolute; left: 50%; transform: translateX(-50%); width: 16px; height: 16px; background: var(--accent); border-radius: 50%; border: 3px solid var(--bg-primary); z-index: 2; }
+  .timeline-content { background: var(--bg-card); padding: 1.8rem; border-radius: 12px; border: 1px solid var(--border); margin: 0 2rem; max-width: 400px; transition: all 0.3s; }
+  .timeline-content:hover { border-color: var(--accent); transform: translateY(-5px); }
+  .timeline-date { color: var(--accent); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .timeline-title { font-size: 1.2rem; margin-bottom: 0.3rem; }
+  .timeline-company { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; font-style: italic; }
+  .timeline-content ul { list-style: none; }
+  .timeline-content ul li { color: var(--text-secondary); font-size: 0.9rem; padding-left: 1.2rem; position: relative; margin-bottom: 0.5rem; }
+  .timeline-content ul li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); }
+  
+  .education-section { background: var(--bg-secondary); }
+  .education-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1100px; margin: 0 auto; }
+  .edu-card { background: var(--bg-card); padding: 2rem; border-radius: 16px; border: 1px solid var(--border); transition: all 0.3s; }
+  .edu-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+  .edu-badge { display: inline-block; padding: 0.3rem 0.8rem; background: var(--accent-soft); color: var(--accent); border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+  .edu-card h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
+  .edu-school { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .edu-date { color: var(--accent); font-size: 0.9rem; font-weight: 600; }
+  
+  .courses-category { max-width: 1200px; margin: 0 auto 3rem; }
+  .category-title { font-size: 1.5rem; margin-bottom: 1.5rem; padding-left: 1rem; border-left: 4px solid var(--accent); }
+  .courses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.2rem; }
+  .course-card { background: var(--bg-card); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); transition: all 0.3s; display: flex; gap: 1rem; align-items: flex-start; }
+  .course-card:hover { border-color: var(--accent); transform: translateX(5px); }
+  .course-icon { width: 40px; height: 40px; background: var(--accent-soft); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0; }
+  .course-info h4 { font-size: 0.95rem; margin-bottom: 0.3rem; }
+  .course-info p { color: var(--text-secondary); font-size: 0.8rem; }
+  
+  .skills { background: var(--bg-secondary); }
+  .skills-container { max-width: 900px; margin: 0 auto; }
+  .skill-item { margin-bottom: 1.8rem; }
+  .skill-header { display: flex; justify-content: space-between; margin-bottom: 0.6rem; }
+  .skill-name { font-weight: 600; font-size: 1rem; }
+  .skill-percent { color: var(--accent); font-weight: 700; }
+  .skill-bar { height: 8px; background: var(--bg-card); border-radius: 10px; overflow: hidden; }
+  .skill-progress { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-hover)); border-radius: 10px; width: 0; transition: width 1.5s ease; }
+  
+  .languages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; max-width: 600px; margin: 0 auto; }
+  .language-card { background: var(--bg-card); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); text-align: center; transition: all 0.3s; }
+  .language-card:hover { border-color: var(--accent); transform: translateY(-5px); }
+  .language-card i { font-size: 2rem; color: var(--accent); margin-bottom: 0.5rem; }
+  .language-card h4 { margin-bottom: 0.3rem; }
+  .language-card p { color: var(--text-secondary); font-size: 0.9rem; }
+  
+  .contact-section { background: var(--bg-secondary); }
+  .contact-container { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+  .contact-card { background: var(--bg-card); padding: 2rem; border-radius: 12px; border: 1px solid var(--border); text-align: center; transition: all 0.3s; text-decoration: none; color: var(--text-primary); }
+  .contact-card:hover { border-color: var(--accent); transform: translateY(-5px); }
+  .contact-icon { width: 60px; height: 60px; background: var(--accent-soft); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.5rem; color: var(--accent); }
+  .contact-card h4 { margin-bottom: 0.5rem; font-size: 1rem; }
+  .contact-card p { color: var(--text-secondary); font-size: 0.9rem; word-break: break-all; }
+  
+  footer { background: var(--bg-secondary); padding: 2rem 5%; border-top: 1px solid var(--border); }
+  .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .footer-social { display: flex; gap: 1rem; }
+  .footer-social a { width: 40px; height: 40px; background: var(--bg-card); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-primary); transition: all 0.3s; text-decoration: none; }
+  .footer-social a:hover { background: var(--accent); color: var(--bg-primary); transform: translateY(-3px); }
+  footer p { color: var(--text-secondary); font-size: 0.9rem; }
+  
+  .fade-in { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  
+  .admin-panel { position: fixed; top: 0; right: -100%; width: 100%; max-width: 600px; height: 100vh; background: var(--bg-secondary); z-index: 2000; transition: right 0.4s ease; overflow-y: auto; border-left: 2px solid var(--accent); box-shadow: -10px 0 40px rgba(0,0,0,0.5); }
+  .admin-panel.open { right: 0; }
+  .admin-header { position: sticky; top: 0; background: var(--bg-secondary); padding: 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+  .admin-header h2 { color: var(--accent); font-size: 1.3rem; }
+  .close-admin { background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; }
+  .admin-tabs { display: flex; overflow-x: auto; background: var(--bg-primary); border-bottom: 1px solid var(--border); position: sticky; top: 70px; z-index: 9; }
+  .admin-tab { padding: 1rem 1.5rem; background: none; border: none; color: var(--text-secondary); cursor: pointer; font-weight: 600; font-size: 0.9rem; white-space: nowrap; border-bottom: 3px solid transparent; transition: all 0.3s; }
+  .admin-tab:hover { color: var(--text-primary); }
+  .admin-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .admin-content { padding: 2rem; }
+  .admin-section { display: none; }
+  .admin-section.active { display: block; }
+  .form-group { margin-bottom: 1.5rem; }
+  .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary); font-size: 0.9rem; }
+  .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.8rem 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-family: inherit; font-size: 0.95rem; transition: border-color 0.3s; }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--accent); }
+  .form-group textarea { min-height: 100px; resize: vertical; }
+  .form-hint { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.3rem; }
+  .admin-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+  .btn-danger { background: var(--danger); color: white; }
+  .btn-danger:hover { background: #c0392b; }
+  .item-list { display: flex; flex-direction: column; gap: 1rem; }
+  .item-card { background: var(--bg-card); padding: 1.2rem; border-radius: 10px; border: 1px solid var(--border); }
+  .item-card h4 { margin-bottom: 0.5rem; color: var(--accent); }
+  .item-card .item-actions { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
+  .item-btn { padding: 0.4rem 0.8rem; border-radius: 6px; border: none; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+  .edit-btn { background: var(--accent); color: var(--bg-primary); }
+  .delete-btn { background: var(--danger); color: white; }
+  .add-item-btn { width: 100%; padding: 1rem; background: var(--bg-card); border: 2px dashed var(--border); border-radius: 10px; color: var(--text-secondary); cursor: pointer; font-weight: 600; transition: all 0.3s; margin-top: 1rem; }
+  .add-item-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 1rem; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: var(--bg-secondary); border-radius: 16px; padding: 2rem; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; border: 1px solid var(--accent); }
+  .modal h3 { color: var(--accent); margin-bottom: 1.5rem; }
+  .modal-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
+  .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--success); color: white; padding: 1rem 1.5rem; border-radius: 10px; z-index: 4000; transform: translateY(100px); opacity: 0; transition: all 0.3s; font-weight: 600; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .reset-fab { position: fixed; bottom: 2rem; left: 2rem; background: var(--danger); color: white; width: 50px; height: 50px; border-radius: 50%; border: none; cursor: pointer; z-index: 999; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(231,76,60,0.4); transition: all 0.3s; }
+  .reset-fab:hover { transform: scale(1.1); }
+  
+  @media (max-width: 900px) {
+    .hero-content { grid-template-columns: 1fr; text-align: center; gap: 3rem; }
+    .hero-text h1 { font-size: 2.5rem; }
+    .hero-description { margin: 0 auto 2rem; }
+    .hero-buttons { justify-content: center; }
+    .hero-stats { justify-content: center; }
+    .photo-container { width: 280px; height: 280px; }
+    .timeline::before { left: 30px; }
+    .timeline-item, .timeline-item:nth-child(even) { padding-left: 80px; padding-right: 0; justify-content: flex-start; }
+    .timeline-dot { left: 30px; }
+    .timeline-content { margin: 0; max-width: 100%; }
+    .nav-links { position: fixed; top: 70px; right: -100%; flex-direction: column; background: var(--bg-secondary); width: 250px; padding: 2rem; border-left: 1px solid var(--border); transition: right 0.3s; }
+    .nav-links.active { right: 0; }
+    .menu-toggle { display: block; }
+    .section-title { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">AC<span style="color:var(--text-primary)">.Cardoso</span></div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#home">Início</a></li>
+    <li><a href="#about">Sobre</a></li>
+    <li><a href="#qualifications">Qualificação</a></li>
+    <li><a href="#experience">Experiência</a></li>
+    <li><a href="#education">Formação</a></li>
+    <li><a href="#courses">Cursos</a></li>
+    <li><a href="#skills">Habilidades</a></li>
+    <li><a href="#contact">Contato</a></li>
+    <li><a href="#" class="admin-btn" id="openAdmin"><i class="fas fa-edit"></i> Editar</a></li>
+  </ul>
+  <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-text">
+      <p class="section-tag">Portfólio Profissional</p>
+      <h1 id="heroName">Ana Carolina<span>Menghui Cardoso</span></h1>
+      <p class="hero-subtitle" id="heroSubtitle">Professora de Ciências e Biologia</p>
+      <p class="hero-description" id="heroDesc">Professora de Ciências e Biologia, com experiência no Ensino Fundamental – Anos Finais e Ensino Médio, em instituições públicas e particulares. Vivência com o Sistema de Ensino Objetivo e com o Google for Education.</p>
+      <div class="hero-buttons">
+        <a href="#contact" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Entrar em Contato</a>
+        <a href="#experience" class="btn btn-secondary"><i class="fas fa-briefcase"></i> Ver Experiência</a>
+      </div>
+      <div class="hero-stats" id="heroStats">
+        <div class="stat"><span class="stat-number">5+</span><span class="stat-label">Anos de Experiência</span></div>
+        <div class="stat"><span class="stat-number">3</span><span class="stat-label">Formações</span></div>
+        <div class="stat"><span class="stat-number">4+</span><span class="stat-label">Cursos</span></div>
+      </div>
+    </div>
+    <div class="hero-image">
+      <div class="photo-container">
+        <img id="profilePhoto" src="https://drive.google.com/file/d/1oRLO0aMw5xj5MB60LOC6NleemepiqJz9/view?usp=sharing" alt="Foto de Perfil">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="section-header fade-in">
+    <p class="section-tag">Sobre Mim</p>
+    <h2 class="section-title">Conheça Minha Trajetória</h2>
+  </div>
+  <div class="about-content fade-in" id="aboutContent">
+    <p>Professora de Ciências e Biologia, com experiência no Ensino Fundamental – Anos Finais e Ensino Médio, em instituições públicas e particulares.</p>
+    <p>Experiência com planejamento e desenvolvimento de aulas, avaliação da aprendizagem, recomposição e acompanhamento do desempenho dos estudantes. Vivência com o Sistema de Ensino Objetivo e com o Google for Education, além da utilização de diferentes recursos e plataformas digitais educacionais.</p>
+    <p>Habilidade no desenvolvimento de metodologias ativas, situações-problema, atividades investigativas e projetos interdisciplinares, buscando promover a participação e a aprendizagem significativa dos estudantes.</p>
+  </div>
+</section>
+
+<section id="qualifications">
+  <div class="section-header fade-in">
+    <p class="section-tag">Diferenciais</p>
+    <h2 class="section-title">Qualificações Profissionais</h2>
+    <p class="section-subtitle">Competências que fazem a diferença no meu trabalho</p>
+  </div>
+  <div class="qualifications-grid" id="qualificationsGrid">
+    <div class="qual-card fade-in"><div class="qual-icon"><i class="fas fa-flask"></i></div><h3>Ensino de Ciências e Biologia</h3><p>Experiência no Ensino Fundamental – Anos Finais e Ensino Médio, em instituições públicas e particulares.</p></div>
+    <div class="qual-card fade-in"><div class="qual-icon"><i class="fas fa-chalkboard-teacher"></i></div><h3>Metodologias Ativas</h3><p>Desenvolvimento de situações-problema, atividades investigativas e projetos interdisciplinares.</p></div>
+    <div class="qual-card fade-in"><div class="qual-icon"><i class="fab fa-google"></i></div><h3>Plataformas Digitais</h3><p>Vivência com o Sistema de Ensino Objetivo, Google for Education e diferentes plataformas digitais educacionais.</p></div>
+    <div class="qual-card fade-in"><div class="qual-icon"><i class="fas fa-brain"></i></div><h3>Avaliação da Aprendizagem</h3><p>Planejamento, avaliação, recomposição e acompanhamento do desempenho dos estudantes.</p></div>
+  </div>
+</section>
+
+<section class="education-section" id="experience">
+  <div class="section-header fade-in">
+    <p class="section-tag">Trajetória</p>
+    <h2 class="section-title">Experiência Profissional</h2>
+    <p class="section-subtitle">Minha jornada profissional ao longo dos anos</p>
+  </div>
+  <div class="timeline" id="timeline">
+    <div class="timeline-item fade-in"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-date">Janeiro/2025 — Atualmente</div><h3 class="timeline-title">Professora de Ciências - Efetiva</h3><p class="timeline-company">Secretaria da Educação do Estado de São Paulo (SEDUC-SP)</p><ul><li>Planejamento e desenvolvimento de aulas de Ciências para 8º e 9º anos, alinhadas ao Currículo Paulista.</li><li>Elaboração de atividades, avaliações e estratégias de recomposição das aprendizagens.</li><li>Análise de resultados de avaliações para identificação de dificuldades e planejamento de intervenções pedagógicas.</li><li>Aplicação de metodologias ativas, situações-problema e atividades investigativas.</li><li>Utilização de recursos e plataformas digitais educacionais, como Sala do Futuro, Tarefa SP e Material Digital.</li></ul></div></div>
+    <div class="timeline-item fade-in"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-date">Junho/2021 — Janeiro/2025</div><h3 class="timeline-title">Professora de Ciências e Biologia</h3><p class="timeline-company">Colégio Porto Marchesano</p><ul><li>Planejamento e desenvolvimento de aulas teóricas e práticas para turmas do Ensino Fundamental II e Ensino Médio.</li><li>Elaboração, aplicação e correção de avaliações e atividades pedagógicas.</li><li>Desenvolvimento de projetos interdisciplinares.</li><li>Acompanhamento da aprendizagem dos estudantes.</li><li>Atuação como professora representante da Olimpíada Brasileira de Astronomia e Astronáutica (OBA).</li></ul></div></div>
+    <div class="timeline-item fade-in"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-date">Agosto/2018 — Janeiro/2020</div><h3 class="timeline-title">Professora de Educação Básica</h3><p class="timeline-company">CAPES – Programa Residência Pedagógica</p><ul><li>Participação em atividades de iniciação à docência.</li><li>Planejamento e desenvolvimento de aulas e atividades pedagógicas.</li><li>Acompanhamento de turmas e vivência da rotina escolar, em parceria com professores da Educação Básica.</li></ul></div></div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="section-header fade-in">
+    <p class="section-tag">Formação</p>
+    <h2 class="section-title">Formação Acadêmica</h2>
+    <p class="section-subtitle">Minha jornada educacional e certificações</p>
+  </div>
+  <div class="education-grid" id="educationGrid">
+    <div class="edu-card fade-in"><span class="edu-badge">Em Curso</span><h3>Pós-Graduação Lato Sensu em Neuroaprendizagem, Dificuldades e Transtornos</h3><p class="edu-school"><i class="fas fa-university"></i> Faculdade Líbano</p><p class="edu-date">Previsão: Março/2027</p></div>
+    <div class="edu-card fade-in"><span class="edu-badge">Especialização</span><h3>Especialização em Metodologia do Ensino de Ciências da Natureza</h3><p class="edu-school"><i class="fas fa-university"></i> Instituto Federal de Educação, Ciência e Tecnologia de São Paulo (IFSP)</p><p class="edu-date">Janeiro/2023 — Outubro/2024</p></div>
+    <div class="edu-card fade-in"><span class="edu-badge">Graduação</span><h3>Licenciatura em Ciências Biológicas</h3><p class="edu-school"><i class="fas fa-university"></i> Instituto Federal de Educação, Ciência e Tecnologia de São Paulo (IFSP)</p><p class="edu-date">Fevereiro/2016 — Dezembro/2019</p></div>
+  </div>
+</section>
+
+<section class="about" id="courses">
+  <div class="section-header fade-in">
+    <p class="section-tag">Aperfeiçoamento</p>
+    <h2 class="section-title">Cursos Complementares</h2>
+    <p class="section-subtitle">Capacitações que complementam minha formação</p>
+  </div>
+  <div id="coursesContainer">
+    <div class="courses-category fade-in">
+      <h3 class="category-title"><i class="fas fa-microscope"></i> Ciências e Biologia</h3>
+      <div class="courses-grid">
+        <div class="course-card"><div class="course-icon"><i class="fas fa-leaf"></i></div><div class="course-info"><h4>A Botânica no Cotidiano IV</h4><p>Universidade de São Paulo (USP) • 60h • Novembro/2021</p></div></div>
+        <div class="course-card"><div class="course-icon"><i class="fas fa-dna"></i></div><div class="course-info"><h4>Genética aplicada à Conservação</h4><p>Universidade Federal do ABC • 15h • Julho/2020</p></div></div>
+        <div class="course-card"><div class="course-icon"><i class="fas fa-atom"></i></div><div class="course-info"><h4>Inspira Ciência - 6° Edição</h4><p>Museu do Amanhã • 30h • Julho/2022</p></div></div>
+      </div>
+    </div>
+    <div class="courses-category fade-in">
+      <h3 class="category-title"><i class="fas fa-hands-helping"></i> Inclusão e Acessibilidade</h3>
+      <div class="courses-grid">
+        <div class="course-card"><div class="course-icon"><i class="fas fa-hands"></i></div><div class="course-info"><h4>Libras Básico</h4><p>Secretaria de Educação do Município de Itapevi • 80h • Dezembro/2020</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="languages">
+  <div class="section-header fade-in">
+    <p class="section-tag">Comunicação</p>
+    <h2 class="section-title">Idiomas</h2>
+    <p class="section-subtitle">Minhas competências linguísticas</p>
+  </div>
+  <div class="languages-grid" id="languagesContainer">
+    <div class="language-card fade-in"><i class="fas fa-language"></i><h4>Inglês</h4><p>Nível Básico</p></div>
+    <div class="language-card fade-in"><i class="fas fa-language"></i><h4>Espanhol</h4><p>Nível Básico</p></div>
+  </div>
+</section>
+
+<section class="skills" id="skills">
+  <div class="section-header fade-in">
+    <p class="section-tag">Competências</p>
+    <h2 class="section-title">Habilidades Técnicas</h2>
+    <p class="section-subtitle">Minhas principais competências profissionais</p>
+  </div>
+  <div class="skills-container" id="skillsContainer">
+    <div class="skill-item fade-in"><div class="skill-header"><span class="skill-name">Planejamento e desenvolvimento de aulas</span><span class="skill-percent">95%</span></div><div class="skill-bar"><div class="skill-progress" data-width="95"></div></div></div>
+    <div class="skill-item fade-in"><div class="skill-header"><span class="skill-name">Metodologias ativas e atividades investigativas</span><span class="skill-percent">90%</span></div><div class="skill-bar"><div class="skill-progress" data-width="90"></div></div></div>
+    <div class="skill-item fade-in"><div class="skill-header"><span class="skill-name">Google for Education e Sistema de Ensino Objetivo</span><span class="skill-percent">88%</span></div><div class="skill-bar"><div class="skill-progress" data-width="88"></div></div></div>
+    <div class="skill-item fade-in"><div class="skill-header"><span class="skill-name">Avaliação da aprendizagem e recomposição</span><span class="skill-percent">92%</span></div><div class="skill-bar"><div class="skill-progress" data-width="92"></div></div></div>
+    <div class="skill-item fade-in"><div class="skill-header"><span class="skill-name">Projetos interdisciplinares</span><span class="skill-percent">85%</span></div><div class="skill-bar"><div class="skill-progress" data-width="85"></div></div></div>
+  </div>
+</section>
+
+<section class="contact-section" id="contact">
+  <div class="section-header fade-in">
+    <p class="section-tag">Vamos Conversar</p>
+    <h2 class="section-title">Entre em Contato</h2>
+    <p class="section-subtitle">Estou disponível para novas oportunidades e projetos</p>
+  </div>
+  <div class="contact-container" id="contactContainer">
+    <a href="mailto:anamenghui@gmail.com" class="contact-card fade-in"><div class="contact-icon"><i class="fas fa-envelope"></i></div><h4>E-mail</h4><p>anamenghui@gmail.com</p></a>
+    <a href="tel:+5511972690511" class="contact-card fade-in"><div class="contact-icon"><i class="fas fa-mobile-alt"></i></div><h4>Celular</h4><p>(11) 97269-0511</p></a>
+    <a href="tel:+551141414543" class="contact-card fade-in"><div class="contact-icon"><i class="fas fa-phone"></i></div><h4>Telefone</h4><p>(11) 4141-4543</p></a>
+    <div class="contact-card fade-in"><div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div><h4>Localização</h4><p>Itapevi / SP — Brasil</p></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-content">
+    <p>© 2026 Ana Carolina Menghui Cardoso. Todos os direitos reservados.</p>
+    <div class="footer-social">
+      <a href="mailto:anamenghui@gmail.com" title="E-mail"><i class="fas fa-envelope"></i></a>
+      <a href="tel:+5511972690511" title="Celular"><i class="fas fa-mobile-alt"></i></a>
+      <a href="https://lattes.cnpq.br/1182273647289200" target="_blank" title="Lattes"><i class="fas fa-graduation-cap"></i></a>
+      <a href="https://linkedin.com/in/ana-carolinacardoso" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+    </div>
+  </div>
+</footer>
+
+<button class="reset-fab" id="resetFab" title="Restaurar dados padrão"><i class="fas fa-undo"></i></button>
+
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-header">
+    <h2><i class="fas fa-cog"></i> Painel de Edição</h2>
+    <button class="close-admin" id="closeAdmin"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="admin-tabs">
+    <button class="admin-tab active" data-tab="tab-hero">Hero</button>
+    <button class="admin-tab" data-tab="tab-about">Sobre</button>
+    <button class="admin-tab" data-tab="tab-qual">Qualificações</button>
+    <button class="admin-tab" data-tab="tab-exp">Experiência</button>
+    <button class="admin-tab" data-tab="tab-edu">Formação</button>
+    <button class="admin-tab" data-tab="tab-courses">Cursos</button>
+    <button class="admin-tab" data-tab="tab-lang">Idiomas</button>
+    <button class="admin-tab" data-tab="tab-skills">Habilidades</button>
+    <button class="admin-tab" data-tab="tab-contact">Contato</button>
+    <button class="admin-tab" data-tab="tab-data">Dados</button>
+  </div>
+  <div class="admin-content">
+    <div class="admin-section active" id="tab-hero">
+      <h3 style="color:var(--accent);margin-bottom:1.5rem;">Seção Hero</h3>
+      <div class="form-group"><label>Foto de Perfil (URL)</label><input type="text" id="adminPhoto" placeholder="https://drive.google.com/uc?id=ID"><p class="form-hint">Para Google Drive, use: https://drive.google.com/uc?id=ID_DO_ARQUIVO</p></div>
+      <div class="form-group"><label>Nome (primeiro + meio)</label><input type="text" id="adminName"></div>
+      <div class="form-group"><label>Sobrenome (aparece em destaque)</label><input type="text" id="adminNameSpan"></div>
+      <div class="form-group"><label>Subtítulo / Cargo</label><input type="text" id="adminSubtitle"></div>
+      <div class="form-group"><label>Descrição</label><textarea id="adminDesc"></textarea></div>
+      <div class="admin-actions"><button class="btn btn-primary" onclick="saveHero()">Salvar Alterações</button></div>
+    </div>
+    <div class="admin-section" id="tab-about">
+      <h3 style="color:var(--accent);margin-bottom:1.5rem;">Sobre Mim</h3>
+      <div class="form-group"><label>Parágrafos (separe com linha em branco)</label><textarea id="adminAbout" style="min-height:200px;"></textarea></div>
+      <div class="admin-actions"><button class="btn btn-primary" onclick="saveAbout()">Salvar</button></div>
+    </div>
+    <div class="admin-section" id="tab-qual">
+      <h3 style="color:var(--accent);margin-bottom:1.5rem;">Qualificações</h3>
+      <div class="item-list" id="adminQualList"></div>
+      <button class="add-item-btn" onclick="openQualModal()"><i class="fas fa-plus"></i> Adicionar Qualificação</button>
+    </div>
+    <div class="admin-section" id="tab-exp">
+      <h3 style="color:var(--accent);margin-bottom:1.5rem;">Experiência Profissional</h3>
+      <div class="item-list" id="adminExpList"></div>
+      <button class="add-item-btn" onclick="openExpModal()"><i class="fas fa-plus"></i> Adicionar Experiência</button>
+    </div>
+    <div class="admin-section" id="tab-edu">
+      <h3 style="color:var(--accent);margin-bottom:1.5rem;">Formação Acadêmica</h3>
+      <div class="item-list" id="adminEduList"></div>
+      <button class="add-item-btn" onclick="openEduModal()"><i class="fas fa-plus"></i> Adicionar Formação</button>
+    </div>
+    <div class="admin-section" id="tab-courses">
+      <h3 style="color:var(--accent);margin-bottom:1.5rem;">Cursos</h3>
+      <div class="item-list" id="adminCoursesList"></div>
+      <button class="add-item-btn" onclick="openCourseModal()"><i class="fas fa-plus"></i> Adicionar Categoria</button>
+    </div>
+    <div class="admin-section" id="tab-lang">
+      <h3 style="color:var(--accent);margin-bottom:1.5rem;">Idiomas</h3>
+      <div class="item-list" id="adminLangList"></div>
+      <button class="add-item-btn" onclick="openLangModal()"><i class="fas fa-plus"></i> Adicionar Idioma</button>
+    </div>
+    <div class="admin-section" id="tab-skills">
+      <h3 style="color:var(--accent);margin-bottom:1.5rem;">Habilidades</h3>
+      <div class="item-list" id="adminSkillsList"></div>
+      <button class="add-item-btn" onclick="openSkillModal()"><i class="fas fa-plus"></i> Adicionar Habilidade</button>
+    </div>
+    <div class="admin-section" id="tab-contact">
+      <h3 style="color:var(--accent);margin-bottom:1.5rem;">Contato</h3>
+      <div class="form-group"><label>E-mail</label><input type="email" id="adminEmail"></div>
+      <div class="form-group"><label>Celular</label><input type="text" id="adminCell"></div>
+      <div class="form-group"><label>Telefone</label><input type="text" id="adminPhone"></div>
+      <div class="form-group"><label>Localização</label><input type="text" id="adminLocation"></div>
+      <div class="form-group"><label>Lattes (URL)</label><input type="url" id="adminLattes"></div>
+      <div class="form-group"><label>LinkedIn (URL)</label><input type="url" id="adminLinkedin"></div>
+      <div class="admin-actions"><button class="btn btn-primary" onclick="saveContact()">Salvar</button></div>
+    </div>
+    <div class="admin-section" id="tab-data">
+      <h3 style="color:var(--accent);margin-bottom:1.5rem;">Gerenciamento de Dados</h3>
+      <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Exporte ou importe seus dados para backup.</p>
+      <div class="admin-actions">
+        <button class="btn btn-primary" onclick="exportData()"><i class="fas fa-download"></i> Exportar JSON</button>
+        <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()"><i class="fas fa-upload"></i> Importar JSON</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+        <button class="btn btn-danger" onclick="resetData()"><i class="fas fa-trash"></i> Restaurar Padrão</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay"><div class="modal" id="modalContent"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const defaultData = {
+  hero: {
+    photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
+    name: "Ana Carolina",
+    nameSpan: "Menghui Cardoso",
+    subtitle: "Professora de Ciências e Biologia",
+    description: "Professora de Ciências e Biologia, com experiência no Ensino Fundamental – Anos Finais e Ensino Médio, em instituições públicas e particulares. Vivência com o Sistema de Ensino Objetivo e com o Google for Education.",
+    stats: [{number:"5+",label:"Anos de Experiência"},{number:"3",label:"Formações"},{number:"4+",label:"Cursos"}]
+  },
+  about: [
+    "Professora de Ciências e Biologia, com experiência no Ensino Fundamental – Anos Finais e Ensino Médio, em instituições públicas e particulares.",
+    "Experiência com planejamento e desenvolvimento de aulas, avaliação da aprendizagem, recomposição e acompanhamento do desempenho dos estudantes. Vivência com o Sistema de Ensino Objetivo e com o Google for Education, além da utilização de diferentes recursos e plataformas digitais educacionais.",
+    "Habilidade no desenvolvimento de metodologias ativas, situações-problema, atividades investigativas e projetos interdisciplinares, buscando promover a participação e a aprendizagem significativa dos estudantes."
+  ],
+  qualifications: [
+    {icon:"fa-flask",title:"Ensino de Ciências e Biologia",desc:"Experiência no Ensino Fundamental – Anos Finais e Ensino Médio, em instituições públicas e particulares."},
+    {icon:"fa-chalkboard-teacher",title:"Metodologias Ativas",desc:"Desenvolvimento de situações-problema, atividades investigativas e projetos interdisciplinares."},
+    {icon:"fab fa-google",title:"Plataformas Digitais",desc:"Vivência com o Sistema de Ensino Objetivo, Google for Education e diferentes plataformas digitais educacionais."},
+    {icon:"fa-brain",title:"Avaliação da Aprendizagem",desc:"Planejamento, avaliação, recomposição e acompanhamento do desempenho dos estudantes."}
+  ],
+  experience: [
+    {date:"Janeiro/2025 — Atualmente",title:"Professora de Ciências - Efetiva",company:"Secretaria da Educação do Estado de São Paulo (SEDUC-SP)",items:["Planejamento e desenvolvimento de aulas de Ciências para 8º e 9º anos, alinhadas ao Currículo Paulista.","Elaboração de atividades, avaliações e estratégias de recomposição das aprendizagens.","Análise de resultados de avaliações para identificação de dificuldades e planejamento de intervenções pedagógicas.","Aplicação de metodologias ativas, situações-problema e atividades investigativas.","Utilização de recursos e plataformas digitais educacionais, como Sala do Futuro, Tarefa SP e Material Digital."]},
+    {date:"Junho/2021 — Janeiro/2025",title:"Professora de Ciências e Biologia",company:"Colégio Porto Marchesano",items:["Planejamento e desenvolvimento de aulas teóricas e práticas para turmas do Ensino Fundamental II e Ensino Médio.","Elaboração, aplicação e correção de avaliações e atividades pedagógicas.","Desenvolvimento de projetos interdisciplinares.","Acompanhamento da aprendizagem dos estudantes.","Atuação como professora representante da Olimpíada Brasileira de Astronomia e Astronáutica (OBA)."]},
+    {date:"Agosto/2018 — Janeiro/2020",title:"Professora de Educação Básica",company:"CAPES – Programa Residência Pedagógica",items:["Participação em atividades de iniciação à docência.","Planejamento e desenvolvimento de aulas e atividades pedagógicas.","Acompanhamento de turmas e vivência da rotina escolar, em parceria com professores da Educação Básica."]}
+  ],
+  education: [
+    {badge:"Em Curso",title:"Pós-Graduação Lato Sensu em Neuroaprendizagem, Dificuldades e Transtornos",school:"Faculdade Líbano",date:"Previsão: Março/2027"},
+    {badge:"Especialização",title:"Especialização em Metodologia do Ensino de Ciências da Natureza",school:"Instituto Federal de Educação, Ciência e Tecnologia de São Paulo (IFSP)",date:"Janeiro/2023 — Outubro/2024"},
+    {badge:"Graduação",title:"Licenciatura em Ciências Biológicas",school:"Instituto Federal de Educação, Ciência e Tecnologia de São Paulo (IFSP)",date:"Fevereiro/2016 — Dezembro/2019"}
+  ],
+  courses: [
+    {category:"Ciências e Biologia",items:[{title:"Inspira Ciência - 6° Edição",inst:"Museu do Amanhã",hours:"30h",date:"Julho/2022"},{title:"A Botânica no Cotidiano IV",inst:"Universidade de São Paulo (USP)",hours:"60h",date:"Novembro/2021"},{title:"Genética aplicada à Conservação",inst:"Universidade Federal do ABC",hours:"15h",date:"Julho/2020"}]},
+    {category:"Inclusão e Acessibilidade",items:[{title:"Libras Básico",inst:"Secretaria de Educação do Município de Itapevi",hours:"80h",date:"Dezembro/2020"}]}
+  ],
+  languages: [
+    {name:"Inglês",level:"Nível Básico"},
+    {name:"Espanhol",level:"Nível Básico"}
+  ],
+  skills: [
+    {name:"Planejamento e desenvolvimento de aulas",percent:95},
+    {name:"Metodologias ativas e atividades investigativas",percent:90},
+    {name:"Google for Education e Sistema de Ensino Objetivo",percent:88},
+    {name:"Avaliação da aprendizagem e recomposição",percent:92},
+    {name:"Projetos interdisciplinares",percent:85}
+  ],
+  contact: {email:"anamenghui@gmail.com",cell:"(11) 97269-0511",phone:"(11) 4141-4543",location:"Itapevi / SP — Brasil",lattes:"https://lattes.cnpq.br/1182273647289200",linkedin:"https://linkedin.com/in/ana-carolinacardoso"}
+};
+
+let data = null;
+let editingIndex = -1;
+
+function loadData() {
+  try {
+    const saved = localStorage.getItem('portfolioDataAC');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && parsed.hero && parsed.qualifications && parsed.experience && parsed.education && parsed.courses && parsed.skills && parsed.contact) {
+        data = parsed;
+        return;
+      }
+    }
+  } catch(e) { console.log('Erro ao carregar dados:', e); }
+  data = JSON.parse(JSON.stringify(defaultData));
+}
+
+function saveData() {
+  localStorage.setItem('portfolioDataAC', JSON.stringify(data));
+  showToast('Dados salvos com sucesso!');
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+function renderAll() {
+  const h = data.hero;
+  document.getElementById('profilePhoto').src = h.photo;
+  document.getElementById('heroName').innerHTML = h.name + '<span>' + h.nameSpan + '</span>';
+  document.getElementById('heroSubtitle').textContent = h.subtitle;
+  document.getElementById('heroDesc').textContent = h.description;
+  document.getElementById('heroStats').innerHTML = h.stats.map(s => '<div class="stat"><span class="stat-number">' + s.number + '</span><span class="stat-label">' + s.label + '</span></div>').join('');
+  
+  document.getElementById('aboutContent').innerHTML = data.about.map(p => '<p>' + p + '</p>').join('');
+  
+  document.getElementById('qualificationsGrid').innerHTML = data.qualifications.map(q => '<div class="qual-card fade-in"><div class="qual-icon"><i class="fas ' + q.icon + '"></i></div><h3>' + q.title + '</h3><p>' + q.desc + '</p></div>').join('');
+  
+  document.getElementById('timeline').innerHTML = data.experience.map(e => '<div class="timeline-item fade-in"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-date">' + e.date + '</div><h3 class="timeline-title">' + e.title + '</h3><p class="timeline-company">' + e.company + '</p><ul>' + e.items.map(it => '<li>' + it + '</li>').join('') + '</ul></div></div>').join('');
+  
+  document.getElementById('educationGrid').innerHTML = data.education.map(e => '<div class="edu-card fade-in"><span class="edu-badge">' + e.badge + '</span><h3>' + e.title + '</h3><p class="edu-school"><i class="fas fa-university"></i> ' + e.school + '</p><p class="edu-date">' + e.date + '</p></div>').join('');
+  
+  const icons = {'Ciências e Biologia':'fa-microscope','Inclusão e Acessibilidade':'fa-hands-helping','Tecnologia e Programação':'fa-code','Educação e Tecnologias':'fa-chalkboard-teacher','Gestão e Desenvolvimento':'fa-briefcase'};
+  document.getElementById('coursesContainer').innerHTML = data.courses.map(cat => '<div class="courses-category fade-in"><h3 class="category-title"><i class="fas ' + (icons[cat.category] || 'fa-book') + '"></i> ' + cat.category + '</h3><div class="courses-grid">' + cat.items.map(c => '<div class="course-card"><div class="course-icon"><i class="fas fa-certificate"></i></div><div class="course-info"><h4>' + c.title + '</h4><p>' + c.inst + ' • ' + c.hours + ' • ' + c.date + '</p></div></div>').join('') + '</div></div>').join('');
+  
+  document.getElementById('languagesContainer').innerHTML = data.languages.map(l => '<div class="language-card fade-in"><i class="fas fa-language"></i><h4>' + l.name + '</h4><p>' + l.level + '</p></div>').join('');
+  
+  document.getElementById('skillsContainer').innerHTML = data.skills.map(s => '<div class="skill-item fade-in"><div class="skill-header"><span class="skill-name">' + s.name + '</span><span class="skill-percent">' + s.percent + '%</span></div><div class="skill-bar"><div class="skill-progress" data-width="' + s.percent + '"></div></div></div>').join('');
+  
+  const c = data.contact;
+  document.getElementById('contactContainer').innerHTML = '<a href="mailto:' + c.email + '" class="contact-card fade-in"><div class="contact-icon"><i class="fas fa-envelope"></i></div><h4>E-mail</h4><p>' + c.email + '</p></a><a href="tel:+55' + c.cell.replace(/\D/g,'') + '" class="contact-card fade-in"><div class="contact-icon"><i class="fas fa-mobile-alt"></i></div><h4>Celular</h4><p>' + c.cell + '</p></a><a href="tel:+55' + c.phone.replace(/\D/g,'') + '" class="contact-card fade-in"><div class="contact-icon"><i class="fas fa-phone"></i></div><h4>Telefone</h4><p>' + c.phone + '</p></a><div class="contact-card fade-in"><div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div><h4>Localização</h4><p>' + c.location + '</p></div>';
+  
+  const footerSocial = document.querySelector('.footer-social');
+  footerSocial.innerHTML = '<a href="mailto:' + c.email + '" title="E-mail"><i class="fas fa-envelope"></i></a><a href="tel:+55' + c.cell.replace(/\D/g,'') + '" title="Celular"><i class="fas fa-mobile-alt"></i></a>';
+  if (c.lattes && c.lattes !== '#') footerSocial.innerHTML += '<a href="' + c.lattes + '" target="_blank" title="Lattes"><i class="fas fa-graduation-cap"></i></a>';
+  if (c.linkedin && c.linkedin !== '#') footerSocial.innerHTML += '<a href="' + c.linkedin + '" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>';
+  
+  observeFade();
+}
+
+function observeFade() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        if (entry.target.classList.contains('skill-item')) {
+          const p = entry.target.querySelector('.skill-progress');
+          if (p) setTimeout(() => { p.style.width = p.dataset.width + '%'; }, 200);
+        }
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+}
+
+document.getElementById('openAdmin').addEventListener('click', e => {
+  e.preventDefault();
+  loadAdminData();
+  document.getElementById('adminPanel').classList.add('open');
+});
+
+document.getElementById('closeAdmin').addEventListener('click', () => {
+  document.getElementById('adminPanel').classList.remove('open');
+});
+
+document.querySelectorAll('.admin-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.tab).classList.add('active');
+  });
+});
+
+function loadAdminData() {
+  document.getElementById('adminPhoto').value = data.hero.photo;
+  document.getElementById('adminName').value = data.hero.name;
+  document.getElementById('adminNameSpan').value = data.hero.nameSpan;
+  document.getElementById('adminSubtitle').value = data.hero.subtitle;
+  document.getElementById('adminDesc').value = data.hero.description;
+  document.getElementById('adminAbout').value = data.about.join('\n\n');
+  document.getElementById('adminEmail').value = data.contact.email;
+  document.getElementById('adminCell').value = data.contact.cell;
+  document.getElementById('adminPhone').value = data.contact.phone;
+  document.getElementById('adminLocation').value = data.contact.location;
+  document.getElementById('adminLattes').value = data.contact.lattes || '';
+  document.getElementById('adminLinkedin').value = data.contact.linkedin || '';
+  renderAdminQualList();
+  renderAdminExpList();
+  renderAdminEduList();
+  renderAdminCoursesList();
+  renderAdminLangList();
+  renderAdminSkillsList();
+}
+
+function saveHero() {
+  data.hero.photo = document.getElementById('adminPhoto').value || data.hero.photo;
+  data.hero.name = document.getElementById('adminName').value;
+  data.hero.nameSpan = document.getElementById('adminNameSpan').value;
+  data.hero.subtitle = document.getElementById('adminSubtitle').value;
+  data.hero.description = document.getElementById('adminDesc').value;
+  saveData();
+  renderAll();
+}
+
+function saveAbout() {
+  data.about = document.getElementById('adminAbout').value.split('\n\n').filter(p => p.trim());
+  saveData();
+  renderAll();
+}
+
+function saveContact() {
+  data.contact.email = document.getElementById('adminEmail').value;
+  data.contact.cell = document.getElementById('adminCell').value;
+  data.contact.phone = document.getElementById('adminPhone').value;
+  data.contact.location = document.getElementById('adminLocation').value;
+  data.contact.lattes = document.getElementById('adminLattes').value || '#';
+  data.contact.linkedin = document.getElementById('adminLinkedin').value || '#';
+  saveData();
+  renderAll();
+}
+
+function renderAdminQualList() {
+  document.getElementById('adminQualList').innerHTML = data.qualifications.map((q, i) => '<div class="item-card"><h4><i class="fas ' + q.icon + '"></i> ' + q.title + '</h4><p style="color:var(--text-secondary);font-size:0.9rem;">' + q.desc + '</p><div class="item-actions"><button class="item-btn edit-btn" onclick="openQualModal(' + i + ')">Editar</button><button class="item-btn delete-btn" onclick="deleteQual(' + i + ')">Excluir</button></div></div>').join('');
+}
+
+function renderAdminExpList() {
+  document.getElementById('adminExpList').innerHTML = data.experience.map((e, i) => '<div class="item-card"><h4>' + e.title + '</h4><p style="color:var(--text-secondary);font-size:0.9rem;">' + e.company + ' • ' + e.date + '</p><div class="item-actions"><button class="item-btn edit-btn" onclick="openExpModal(' + i + ')">Editar</button><button class="item-btn delete-btn" onclick="deleteExp(' + i + ')">Excluir</button></div></div>').join('');
+}
+
+function renderAdminEduList() {
+  document.getElementById('adminEduList').innerHTML = data.education.map((e, i) => '<div class="item-card"><h4>' + e.title + '</h4><p style="color:var(--text-secondary);font-size:0.9rem;">' + e.school + ' • ' + e.date + '</p><div class="item-actions"><button class="item-btn edit-btn" onclick="openEduModal(' + i + ')">Editar</button><button class="item-btn delete-btn" onclick="deleteEdu(' + i + ')">Excluir</button></div></div>').join('');
+}
+
+function renderAdminCoursesList() {
+  document.getElementById('adminCoursesList').innerHTML = data.courses.map((cat, ci) => '<div class="item-card"><h4>' + cat.category + '</h4><p style="color:var(--text-secondary);font-size:0.9rem;">' + cat.items.length + ' curso(s)</p><div class="item-actions"><button class="item-btn edit-btn" onclick="addCourseToCategory(' + ci + ')">+ Curso</button><button class="item-btn delete-btn" onclick="deleteCategory(' + ci + ')">Excluir</button></div></div>').join('');
+}
+
+function renderAdminLangList() {
+  document.getElementById('adminLangList').innerHTML = data.languages.map((l, i) => '<div class="item-card"><h4>' + l.name + '</h4><p style="color:var(--text-secondary);font-size:0.9rem;">' + l.level + '</p><div class="item-actions"><button class="item-btn edit-btn" onclick="openLangModal(' + i + ')">Editar</button><button class="item-btn delete-btn" onclick="deleteLang(' + i + ')">Excluir</button></div></div>').join('');
+}
+
+function renderAdminSkillsList() {
+  document.getElementById('adminSkillsList').innerHTML = data.skills.map((s, i) => '<div class="item-card"><h4>' + s.name + '</h4><p style="color:var(--text-secondary);font-size:0.9rem;">' + s.percent + '%</p><div class="item-actions"><button class="item-btn edit-btn" onclick="openSkillModal(' + i + ')">Editar</button><button class="item-btn delete-btn" onclick="deleteSkill(' + i + ')">Excluir</button></div></div>').join('');
+}
+
+function openModal(html) {
+  document.getElementById('modalContent').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target.id === 'modalOverlay') closeModal();
+});
+
+function openQualModal(idx) {
+  editingIndex = idx;
+  const q = idx >= 0 ? data.qualifications[idx] : {icon:'fa-star',title:'',desc:''};
+  openModal('<h3>' + (idx >= 0 ? 'Editar' : 'Nova') + ' Qualificação</h3><div class="form-group"><label>Ícone (classe Font Awesome)</label><input type="text" id="mQualIcon" value="' + q.icon + '"><p class="form-hint">Ex: fa-flask, fa-chalkboard-teacher</p></div><div class="form-group"><label>Título</label><input type="text" id="mQualTitle" value="' + q.title + '"></div><div class="form-group"><label>Descrição</label><textarea id="mQualDesc">' + q.desc + '</textarea></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveQual()">Salvar</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
+}
+
+function saveQual() {
+  const q = {icon:document.getElementById('mQualIcon').value,title:document.getElementById('mQualTitle').value,desc:document.getElementById('mQualDesc').value};
+  if (editingIndex >= 0) data.qualifications[editingIndex] = q;
+  else data.qualifications.push(q);
+  saveData();
+  renderAll();
+  renderAdminQualList();
+  closeModal();
+}
+
+function deleteQual(i) {
+  if (confirm('Excluir qualificação?')) { data.qualifications.splice(i, 1); saveData(); renderAll(); renderAdminQualList(); }
+}
+
+function openExpModal(idx) {
+  editingIndex = idx;
+  const e = idx >= 0 ? data.experience[idx] : {date:'',title:'',company:'',items:['']};
+  openModal('<h3>' + (idx >= 0 ? 'Editar' : 'Nova') + ' Experiência</h3><div class="form-group"><label>Período</label><input type="text" id="mExpDate" value="' + e.date + '"></div><div class="form-group"><label>Cargo</label><input type="text" id="mExpTitle" value="' + e.title + '"></div><div class="form-group"><label>Instituição</label><input type="text" id="mExpCompany" value="' + e.company + '"></div><div class="form-group"><label>Atividades (uma por linha)</label><textarea id="mExpItems">' + e.items.join('\n') + '</textarea></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveExp()">Salvar</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
+}
+
+function saveExp() {
+  const e = {date:document.getElementById('mExpDate').value,title:document.getElementById('mExpTitle').value,company:document.getElementById('mExpCompany').value,items:document.getElementById('mExpItems').value.split('\n').filter(i => i.trim())};
+  if (editingIndex >= 0) data.experience[editingIndex] = e;
+  else data.experience.unshift(e);
+  saveData();
+  renderAll();
+  renderAdminExpList();
+  closeModal();
+}
+
+function deleteExp(i) {
+  if (confirm('Excluir experiência?')) { data.experience.splice(i, 1); saveData(); renderAll(); renderAdminExpList(); }
+}
+
+function openEduModal(idx) {
+  editingIndex = idx;
+  const e = idx >= 0 ? data.education[idx] : {badge:'Graduação',title:'',school:'',date:''};
+  openModal('<h3>' + (idx >= 0 ? 'Editar' : 'Nova') + ' Formação</h3><div class="form-group"><label>Badge</label><select id="mEduBadge"><option ' + (e.badge === 'Graduação' ? 'selected' : '') + '>Graduação</option><option ' + (e.badge === 'Especialização' ? 'selected' : '') + '>Especialização</option><option ' + (e.badge === 'Em Curso' ? 'selected' : '') + '>Em Curso</option><option ' + (e.badge === 'MBA' ? 'selected' : '') + '>MBA</option><option ' + (e.badge === 'Pós-Graduação' ? 'selected' : '') + '>Pós-Graduação</option></select></div><div class="form-group"><label>Título</label><input type="text" id="mEduTitle" value="' + e.title + '"></div><div class="form-group"><label>Instituição</label><input type="text" id="mEduSchool" value="' + e.school + '"></div><div class="form-group"><label>Período</label><input type="text" id="mEduDate" value="' + e.date + '"></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveEdu()">Salvar</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
+}
+
+function saveEdu() {
+  const e = {badge:document.getElementById('mEduBadge').value,title:document.getElementById('mEduTitle').value,school:document.getElementById('mEduSchool').value,date:document.getElementById('mEduDate').value};
+  if (editingIndex >= 0) data.education[editingIndex] = e;
+  else data.education.push(e);
+  saveData();
+  renderAll();
+  renderAdminEduList();
+  closeModal();
+}
+
+function deleteEdu(i) {
+  if (confirm('Excluir formação?')) { data.education.splice(i, 1); saveData(); renderAll(); renderAdminEduList(); }
+}
+
+function openCourseModal() {
+  openModal('<h3>Nova Categoria de Cursos</h3><div class="form-group"><label>Nome da Categoria</label><input type="text" id="mCatName"></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveCategory()">Salvar</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
+}
+
+function saveCategory() {
+  const name = document.getElementById('mCatName').value;
+  if (name) { data.courses.push({category:name,items:[]}); saveData(); renderAll(); renderAdminCoursesList(); closeModal(); }
+}
+
+function addCourseToCategory(catIdx) {
+  editingIndex = catIdx;
+  openModal('<h3>Adicionar Curso em "' + data.courses[catIdx].category + '"</h3><div class="form-group"><label>Título do Curso</label><input type="text" id="mCourseTitle"></div><div class="form-group"><label>Instituição</label><input type="text" id="mCourseInst"></div><div class="form-group"><label>Carga Horária</label><input type="text" id="mCourseHours"></div><div class="form-group"><label>Data/Ano</label><input type="text" id="mCourseDate"></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveCourse()">Salvar</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
+}
+
+function saveCourse() {
+  const c = {title:document.getElementById('mCourseTitle').value,inst:document.getElementById('mCourseInst').value,hours:document.getElementById('mCourseHours').value,date:document.getElementById('mCourseDate').value};
+  data.courses[editingIndex].items.push(c);
+  saveData();
+  renderAll();
+  renderAdminCoursesList();
+  closeModal();
+}
+
+function deleteCategory(i) {
+  if (confirm('Excluir categoria inteira?')) { data.courses.splice(i, 1); saveData(); renderAll(); renderAdminCoursesList(); }
+}
+
+function openLangModal(idx) {
+  editingIndex = idx;
+  const l = idx >= 0 ? data.languages[idx] : {name:'',level:'Básico'};
+  openModal('<h3>' + (idx >= 0 ? 'Editar' : 'Novo') + ' Idioma</h3><div class="form-group"><label>Idioma</label><input type="text" id="mLangName" value="' + l.name + '"></div><div class="form-group"><label>Nível</label><input type="text" id="mLangLevel" value="' + l.level + '"></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveLang()">Salvar</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
+}
+
+function saveLang() {
+  const l = {name:document.getElementById('mLangName').value,level:document.getElementById('mLangLevel').value};
+  if (editingIndex >= 0) data.languages[editingIndex] = l;
+  else data.languages.push(l);
+  saveData();
+  renderAll();
+  renderAdminLangList();
+  closeModal();
+}
+
+function deleteLang(i) {
+  if (confirm('Excluir idioma?')) { data.languages.splice(i, 1); saveData(); renderAll(); renderAdminLangList(); }
+}
+
+function openSkillModal(idx) {
+  editingIndex = idx;
+  const s = idx >= 0 ? data.skills[idx] : {name:'',percent:50};
+  openModal('<h3>' + (idx >= 0 ? 'Editar' : 'Nova') + ' Habilidade</h3><div class="form-group"><label>Nome</label><input type="text" id="mSkillName" value="' + s.name + '"></div><div class="form-group"><label>Percentual (0-100)</label><input type="number" id="mSkillPercent" value="' + s.percent + '" min="0" max="100"></div><div class="modal-actions"><button class="btn btn-primary" onclick="saveSkill()">Salvar</button><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button></div>');
+}
+
+function saveSkill() {
+  const s = {name:document.getElementById('mSkillName').value,percent:parseInt(document.getElementById('mSkillPercent').value)};
+  if (editingIndex >= 0) data.skills[editingIndex] = s;
+  else data.skills.push(s);
+  saveData();
+  renderAll();
+  renderAdminSkillsList();
+  closeModal();
+}
+
+function deleteSkill(i) {
+  if (confirm('Excluir habilidade?')) { data.skills.splice(i, 1); saveData(); renderAll(); renderAdminSkillsList(); }
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'portfolio-ana-carolina.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Dados exportados!');
+}
+
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      data = JSON.parse(ev.target.result);
+      saveData();
+      renderAll();
+      loadAdminData();
+      showToast('Dados importados!');
+    } catch (err) { alert('Erro ao importar: ' + err.message); }
+  };
+  reader.readAsText(file);
+}
+
+function resetData() {
+  if (confirm('Restaurar dados padrão? Todas as alterações serão perdidas.')) {
+    localStorage.removeItem('portfolioDataAC');
+    data = JSON.parse(JSON.stringify(defaultData));
+    saveData();
+    renderAll();
+    loadAdminData();
+    showToast('Dados restaurados!');
+  }
+}
+
+document.getElementById('resetFab').addEventListener('click', () => {
+  if (confirm('Restaurar todos os dados para o padrão original?')) {
+    localStorage.removeItem('portfolioDataAC');
+    data = JSON.parse(JSON.stringify(defaultData));
+    renderAll();
+    showToast('Dados restaurados!');
+  }
+});
+
+document.getElementById('menuToggle').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('active');
+});
+
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => document.getElementById('navLinks').classList.remove('active'));
+});
+
+loadData();
+renderAll();
+</script>
+
+</body>
+</html>
